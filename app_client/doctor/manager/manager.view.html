@@ -1,0 +1,33 @@
+<navigation></navigation>
+
+<div id='main-wrapper'>
+  
+  <sidebar></sidebar>
+  
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <h1>Here you can modify database entities</h1>
+      <p>Add Exercise maybe?? </p>
+      <form ng-submit="vm.addExercise()">
+        <input type="text" name="name" ng-model="vm.exerciseInfo.name"> name</input><br><br> 
+        <textarea name="blurb" ng-model="vm.exerciseInfo.description" rows="10" cols="30">
+        Explain the activity.
+        </textarea>
+        <input type="submit" id="submit" value="Submit" />
+      </form>
+    </div>
+    
+    <div class="container-fluid">
+      <div ng-repeat="ex in allex" >
+        <div class="col-md-4">
+          <div class="exerciseInfo" >
+            <h3>{{ex.name}}</h3>
+            <p>{{ex.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div>
+  
+</div>
+

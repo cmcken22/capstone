@@ -1,0 +1,195 @@
+<navigation></navigation>
+
+<div id='main-wrapper'>
+  
+  <sidebar></sidebar>
+  
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      
+      <style type="text/css">
+        #dummyData{
+          background-color: rgba(255, 0, 255, 0.7);
+          padding: 10px;
+        }
+        #pressure{
+          background-color: rgba(0, 255, 255, 0.7);
+          padding: 10px;
+        }
+        .hh-panel {
+          box-shadow: 5px 3px 20px 2px rgba(200,200,200,0.8);
+          padding: 10px 2%;
+          background-color: #eee;
+          border: 1px solid #ddd;
+        }
+        .tab-content {
+          padding: 10px;
+          background-color: #fff;
+          border: 1px solid #ddd;
+          border-top: 0px;
+        }
+        .modal{
+          top: 40px;
+        }
+        .h3x{
+          margin-top: 0px
+        }
+      </style>
+      
+      <br>
+      
+      <!--<div class="form-group">-->
+      <!--  <div class="col-lg-3">-->
+      <!--    <button class="btn btn-primary btn-lg" ng-click="vm.generateGameData()">Generate Data</button>-->
+      <!--  </div>-->
+      <!--</div>-->
+      
+      <div class="hh-panel">
+        
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#month" data-toggle="tab">View Monthly</a></li>
+          <li><a href="#range" data-toggle="tab">View Range</a></li>
+        </ul>
+        
+        <div id="myTabContent" class="tab-content">
+          
+          <div class="tab-pane fade active in" id="month">
+            
+            <form class="form-horizontal" ng-submit="vm.viewALLByMonth()">
+              <fieldset>
+                
+                <legend>View by month</legend>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    <label for="exercise-select">Exercise: </label>
+                    <select class="form-control" id="exercise-select">
+                      <option>ALL</option>
+              			</select>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    <label for="_monthPicker">Month</label> 
+                    <div class="input-group date" id="monthPicker">
+                      <input type="text" class="form-control" name="month" id='_monthPicker'>
+                      <div class="input-group-addon">
+                          <span class="glyphicon glyphicon-th"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-lg-3">
+                    <button class="btn btn-primary btn-lg">Submit</button>
+                  </div>
+                </div>
+                  
+              </fieldset>
+            </form>
+            
+          </div><!-- view by month tab -->
+          
+          <div class="tab-pane fade in" id="range">
+            
+            <form class="form-horizontal" ng-submit="vm.viewALLByRange()">
+              <fieldset>
+              
+              <legend>View by Range:</legend>
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    <label for="exercise-select-range">Exercise: </label>
+                    <select class="form-control" id="exercise-select-range">
+                      <option>ALL</option>
+              			</select>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    <label for="_startDate">Range: </label> 
+                    <div class="input-group input-daterange">
+                  		<input id="_startDate" type="text" class="form-control"> 
+                  		<span class="input-group-addon">to</span>
+                  		<input id="_endDate" type="text" class="form-control">
+                  	</div>
+                	</div>
+                </div>
+                
+                <br>
+        
+                <div class="form-group">
+                  <div class="col-lg-3">
+                    <button class="btn btn-primary btn-lg">Submit</button>
+                  </div>
+                </div>
+                
+              </fieldset>
+            </form>
+            
+          </div> <!-- view by range tab -->
+          
+          <div id='graphArea' class="well">
+            <h3 class="h3x">{{vm.modal.title}}</h3>
+            <br>
+            <div class='graph' id='graph'>
+              <canvas id="my-graph"></canvas>
+            </div>
+            
+            <div ng-if="vm.graphDisplayed == true">
+              <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','main')">line</button>
+              <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','main')">bar</button>
+              <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','main')">pie</button>
+            </div>
+            
+          </div><!-- graphArea -->
+          
+        </div><!-- myTabContent -->
+      </div><!-- entire form/graph container -->
+      
+      <br>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h3 class="modal-title" id="myModalLabel">Viewing: {{vm.modal.details}}</h3>
+            </div>
+            <div class="modal-body">
+              
+              <div id='individualGraphArea' class="well">
+                <div ng-if="vm.zoom == true">
+                  <p class="h3x">Date: {{vm.modal.details}}</p>
+                  <p class="h3x">Exercise: {{vm.modal.exercise}}</p>
+                  <p class="h3x">Duration: {{vm.modal.gameObject.time}}</p>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.prev()">prev</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.next()">next</button>
+                </div>
+                
+                <br>
+                <div class='graph' id='modalGraph'>
+                  <canvas id="my-modalGraph"></canvas>
+                </div>
+                  
+                <div ng-if="vm.graphDisplayed == true">
+                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','modal')">line</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','modal')">bar</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','modal')">pie</button>
+                </div>
+              </div><!-- graphArea -->
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+      
+    </div>
+  </div>
+  
+</div>

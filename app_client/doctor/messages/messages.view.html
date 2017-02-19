@@ -1,0 +1,242 @@
+<navigation></navigation>
+
+<div id='main-wrapper'>
+  
+  <sidebar></sidebar>
+  
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <h1>Messages</h1>
+      <div class="hh-panel" ng-show="vm.everythingLoaded">
+        
+        <ul class="nav nav-tabs">
+          <li class="active"><a href='#unread' ng-click='vm.getMessages()' data-toggle="tab" aria-expanded="true">Unread ({{vm.unreadCount}})</a></li>
+          <li class=""><a href='#received' data-toggle="tab" aria-expanded="false">Received ({{vm.receivedCount}})</a></li>
+          <li class=""><a href='#sent' ng-click='vm.getMessages()' data-toggle="tab" aria-expanded="false">Sent ({{vm.sentCount}})</a></li>
+          
+          <li class="pull-right"><a href='#compose' data-toggle="tab" aria-expanded="false">Compose</a></li>
+        </ul>
+        
+        
+        <div class="tab-content">
+          
+
+          
+          <!--Unread Tab-->
+          <div class="tab-pane fade active in" id="unread">
+            <legend>Unread Messages</legend>
+            <div ng-repeat="oneMessage in vm.messages | orderBy:'date':true" ng-show='(oneMessage.read == false) && (oneMessage.receiver == vm.currentUser._id)'>
+              <div id='unread-{{oneMessage._id}}' class="panel panel-default" data-toggle="collapse" data-target="#{{oneMessage._id}}-col1" aria-expanded="false" ng-click='vm.readMessage(oneMessage)'>
+                <div class="panel-heading {{vm.isMessageRead(oneMessage.read)}}">  
+                  <p><strong>From: {{vm.getPatientName(oneMessage.sender)}}</strong></p>
+                  <p>Subject: {{oneMessage.messageSubject}}</p>
+                  <span class="label label-default">{{vm.dateString(oneMessage.date)}}</span>
+                </div>
+                <div id ="{{oneMessage._id}}-col1" class="collapse panel-body">
+                  <p>{{oneMessage.messageBody}}</p>
+                  
+                  <div ng-repeat="oneReply in oneMessage.replysData | orderBy:'date':false">
+                    <div class="panel panel-default cancel-hover">
+                      <div class="panel-heading">  
+                        <p><strong>From: {{vm.replySenderName(oneReply.sender)}}</strong></p>
+                        <span class="label label-default">{{vm.dateString(oneReply.date)}}</span>
+                      </div>
+                      <div class="panel-body">
+                        <p>{{oneReply.body}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="btn-group">
+                    <a class="btn btn-default" data-toggle="modal" data-target="#reply-modal" ng-click="vm.replyClick(oneMessage)">Reply</a>
+                    <a class="btn btn-default" ng-click='vm.markUnread(oneMessage)'>Mark as Unread</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-hide="vm.initUnreadCount == 0" class='negative-height'></div>
+            <div ng-show="vm.initUnreadCount == 0">No unread messages.</div>
+          </div>
+          
+          
+          
+          <!--Received Messages Tab-->
+          <div class="tab-pane fade" id="received">
+            <legend>Received Messages</legend>
+            <div ng-repeat="oneMessage in vm.messages | orderBy:'date':true" ng-show='oneMessage.receiver == vm.currentUser._id'>
+              <div id='rec-{{oneMessage._id}}' class="panel panel-default" data-toggle="collapse" data-target="#{{oneMessage._id}}-col2" aria-expanded="false" ng-click='vm.readMessage(oneMessage)'>
+                <div class="panel-heading {{vm.isMessageRead(oneMessage.read)}}">  
+                  <p><strong>From: {{vm.getPatientName(oneMessage.sender)}}</strong></p>
+                  <p>Subject: {{oneMessage.messageSubject}}</p>
+                  <span class="label label-default">{{vm.dateString(oneMessage.date)}}</span>
+                </div>
+                <div id ="{{oneMessage._id}}-col2" class="collapse panel-body">
+                  <p>{{oneMessage.messageBody}}</p>
+                  
+                  <div ng-repeat="oneReply in oneMessage.replysData | orderBy:'date':false">
+                    <div class="panel panel-default cancel-hover">
+                      <div class="panel-heading">  
+                        <p><strong>From: {{vm.replySenderName(oneReply.sender)}}</strong></p>
+                        <span class="label label-default">{{vm.dateString(oneReply.date)}}</span>
+                      </div>
+                      <div class="panel-body">
+                        <p>{{oneReply.body}}</p>
+                      </div>
+                    </div>
+                  </div>
+                    
+                  <div class="btn-group">
+                    <a class="btn btn-default" data-toggle="modal" data-target="#reply-modal" ng-click="vm.replyClick(oneMessage)">Reply</a>
+                    <a class="btn btn-default" ng-click='vm.markUnread(oneMessage)'>Mark as Unread</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-hide="vm.receivedCount == 0" class='negative-height'></div>
+            <div ng-show="vm.receivedCount == 0">No messages.</div>
+          </div>
+          
+          
+
+          <!--Sent Messages Tab-->
+          <div class="tab-pane fade" id="sent">
+            <legend>Sent Messages</legend>
+            <div ng-repeat="oneMessage in vm.messages | orderBy:'date':true" ng-show='oneMessage.sender == vm.currentUser._id'>
+              <div id='sent-{{oneMessage._id}}' class="panel panel-default" data-toggle="collapse" data-target="#{{oneMessage._id}}-col3" aria-expanded="false" ng-click='vm.readMessage(oneMessage)'>
+                <div class="panel-heading">  
+                
+                  <p><strong>From: {{vm.currentUser.name}}</strong></p>
+                  <p>Subject: {{oneMessage.messageSubject}}</p>
+                  <span class="label label-default">{{vm.dateString(oneMessage.date)}}</span>
+                </div>
+                <div id ="{{oneMessage._id}}-col3" class="collapse panel-body">
+                  <p>{{oneMessage.messageBody}}</p>
+                  
+                    <div ng-repeat="oneReply in oneMessage.replysData | orderBy:'date':false">
+                      <div class="panel panel-default cancel-hover">
+                        <div class="panel-heading">  
+                          <p><strong>From: {{vm.replySenderName(oneReply.sender)}}</strong></p>
+                          <span class="label label-default">{{vm.dateString(oneReply.date)}}</span>
+                        </div>
+                        <div class="panel-body">
+                          <p>{{oneReply.body}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  
+          
+          
+                  <div class="btn-group">
+                    <a class="btn btn-default" data-toggle="modal" data-target="#reply-modal" ng-click="vm.replyClick(oneMessage)">Reply</a>
+                  </div>        
+                </div>
+              </div>
+            </div>
+            <div ng-hide="vm.sentCount == 0" class='negative-height'></div>
+            <div ng-show="vm.sentCount == 0">No messages.</div>
+          </div>
+          
+          <!--Compose Tab-->
+          <div class="tab-pane fade" id="compose">
+            <form class="form-horizontal" ng-submit="vm.messageSend()">
+              <legend>Compose New Message</legend>
+              <fieldset>
+                <div class="form-group">
+                  <label for="select" class="col-lg-2 control-label">To: </label>
+                  <div class="col-lg-10">
+                    <select class="form-control" id="patient-select" ng-model="vm.compose.patientId">
+                      <option></option>
+              			</select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="subject" class="col-lg-2 control-label">Subject</label>
+                  <div class="col-lg-10">
+                    <input type="text" class="form-control" id="subject" placeholder="Subject" ng-model="vm.compose.messageSubject">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="textArea" class="col-lg-2 control-label">Message</label>
+                  <div class="col-lg-10">
+                    <textarea class="form-control" rows="3" id="textArea" placeholder="Type a message ..." ng-model="vm.compose.messageBody"></textarea>
+                  </div>
+                </div>
+                
+                <div class="alert-div">
+                </div>
+                
+                <div class="form-group">
+                  <div class="col-lg-10 col-lg-offset-2">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div><!--end of tab-content-->
+        
+      </div>
+    </div>
+  </div>
+  
+    <div id='reply-modal' class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Subject: {{vm.activeReply.messageSubject}}</h4>
+        </div>
+        
+        
+        <div class="modal-body">
+          
+          <div class="panel panel-default">
+            <div class="panel-heading">  
+              <p><strong>From: {{vm.replySenderName(vm.activeReply.sender)}}</strong></p>
+              <p>Subject: {{vm.activeReply.messageSubject}}</p>
+              <span class="label label-default">{{vm.dateString(vm.activeReply.date)}}</span>
+            </div>
+            <div class="panel-body">
+              <p>{{vm.activeReply.messageBody}}</p>
+            </div>
+          </div>
+          <div class='row'>
+            <div ng-repeat="oneReply in vm.activeReply.replysData | orderBy:'date':false" class='col-lg-11 col-lg-offset-1'>
+              <div class="panel panel-default cancel-hover">
+                <div class="panel-heading">  
+                  <p><strong>From: {{vm.replySenderName(oneReply.sender)}}</strong></p>
+                  <span class="label label-default">{{vm.dateString(oneReply.date)}}</span>
+                </div>
+                <div class="panel-body">
+                  <p>{{oneReply.body}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="modal-footer">
+          
+          <form class="form-horizontal" ng-submit="vm.postReply()">
+            <fieldset>
+              <div class="form-group">
+                <label for="textArea" class="col-lg-2 control-label">Reply</label>
+                <div class="col-lg-10">
+                  <textarea class="form-control" rows="3" id="textArea" placeholder="Type a reply ..." ng-model="vm.replyBody" required></textarea>
+                </div>
+              </div>
+              <div class="alert-div">
+              </div>
+              <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                  <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>

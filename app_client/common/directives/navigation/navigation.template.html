@@ -1,0 +1,27 @@
+<div class="navbar-default">
+  <div class="container-fluid">
+      
+    <div class="navbar-header">
+      <a class="no-pointer navbar-brand">Help @ Home</a>
+    </div>
+    
+    <div class="container-fluid">
+      <ul class="nav navbar-nav navbar-right">
+        
+        <li ng-show="navvm.isLoggedIn"><a href="/">Dashboard</a></li>
+        
+        
+        <li class="dropdown">
+          
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{navvm.currentUser.name}} <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="profile">My Account</a></li>
+            <li class="divider"></li>
+            <li><a ng-click='navvm.signOut()'>Sign Out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+      
+  </div>
+</div>

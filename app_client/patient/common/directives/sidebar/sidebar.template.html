@@ -1,0 +1,25 @@
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav" >
+      <div ng-show='sidevm.loaded'>
+      <li class="sidebar-brand">
+        <a href="/dashboard" >Dashboard</a>
+      </li>
+      <li>
+          <a href="/exercises">Exercises</a>
+      </li>
+      <li>
+          <a href="/messages">Messages<div id='sidebar-messages'>{{sidevm.numNewMessages}}</div></a>
+      </li>
+      <li>
+          <a href="/profile">My Account</a>
+      </li>
+      <li>
+          <a href="/calendar">Calendar</a>
+      </li>
+      <li>
+          <a href='#' ng-click='sidevm.signOut()'>Sign Out</a>
+      </li>
+      </div>
+    </ul>
+    <a id="menu-toggle"></a>
+</div>
