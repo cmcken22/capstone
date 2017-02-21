@@ -35,6 +35,23 @@ module.exports.getPatientEvent = function (req, res)
         res.json(event);
     });
 }
+module.exports.getEventByPatientId = function (req, res)
+{
+    console.log('/get-event by patientID');
+    //lookfor specific dude's events
+   
+    var ID= req.body._id; 
+    console.log("backend: " +ID);
+    event.find({patient: ID},
+    function(err,event)
+    {
+        if(err)
+        {
+            return err;
+        }
+        res.json(event);
+    });
+}
 
 module.exports.postEvent = function(req, res)
 {

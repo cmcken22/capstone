@@ -11,7 +11,14 @@ module.exports.getGameData = function(req, res) {
         res.json(gameData);
     });
 };
-
+module.exports.getGameDataById = function(req, res) {
+     console.log(req.body._id);
+    gameData.find({_id:req.body._id},function(err, data){
+       
+        if(err){ return err; }
+        res.json(data);
+    });
+};
 module.exports.querySingleDate = function(req, res) {
     console.log(req.route.path);
     

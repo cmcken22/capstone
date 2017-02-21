@@ -26,6 +26,7 @@
       name : "",
       email : "",
       password : "",
+      regDoctor: authentication.currentUser()._id
     };
     
     vm.registerSubmit = function(){

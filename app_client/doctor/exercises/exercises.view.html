@@ -198,11 +198,12 @@
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','modal')">pie</button>
                 </div>
               </div><!-- graphArea -->
-              
+           
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+               <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+            
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal -->
@@ -210,12 +211,5 @@
     </div>
   </div>
   <!--lets lets try this out-->
-  <div ng-controller='simCtrl' ng-init='getGameData()'>
-    <select ng-model='selected'>
-      <option ng-repeat='d in gameDatas' value={{d | json : object}}>{{d.$$hashKey}}</option>
-    </select>
-    <canvas ng-click="showData()"id='simulation'width="200" height="200" style="border:1px solid">
-      
-    </canvas>
-  </div>
+ 
 </div>

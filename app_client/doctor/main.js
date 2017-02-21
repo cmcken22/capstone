@@ -59,6 +59,11 @@
         controllerAs: 'vm',
         reloadOnSearch: false
       })
+      .when('/simulation',{
+        templateUrl: 'doctor/sim/sim.view.html',
+        controller: 'simCtrl'
+        
+      })
       .when('/doctor', { 
         redirectTo: '/dashboard'
       })

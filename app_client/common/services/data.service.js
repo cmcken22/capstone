@@ -78,6 +78,10 @@
     var getPatientEvents = function(){
       return $http.get('/api/get-patientevent');
     };
+    var getEventByPatientId = function(data){
+      console.log('dataservice: '+ data)
+      return $http.post('/api/get-eventByPatientId',{_id:data});
+    };
     var postEvent = function(data){
       return $http.post('/api/post-event', data);
     };
@@ -90,7 +94,12 @@
     var getGameData = function () {
       return $http.get('/api/get-gamedata');
     };
-    
+    var getGameDataById = function(data){
+      return $http.post('/api/get-gamedata-by-id',
+      {
+        _id:data
+      });
+    };
     var generateGameData = function () {
       console.log('getting');
       return $http.post('/api/generate-gamedata');
@@ -149,10 +158,12 @@
       getSingleExercise : getSingleExercise,
       postExercise : postExercise,
       getEvent : getEvents,
+      getEventByPatientId : getEventByPatientId,
       postEvent : postEvent,
       getPatientEvents : getPatientEvents,
       
       getGameData : getGameData,
+      getGameDataById:getGameDataById,
       postGameData : postGameData,
       querySingleDate: querySingleDate,
       queryDateRange: queryDateRange,

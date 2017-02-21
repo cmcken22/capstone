@@ -1,0 +1,24 @@
+<navigation></navigation>
+
+<div id='main-wrapper' ng-init="getData()">
+<sidebar></sidebar>
+<select ng-model="patient" >
+    <option ng-repeat='p in allPatients' value='{{p._id}}'>{{p.name}}</option>
+</select>
+<select ng-model="exercise">
+    <option ng-repeat='e in allex' value='{{e._id}}'>{{e.name}}</option>
+</select>
+<p>show exercises between:</p>
+<input class="sdate" type="text" ng-model='sDate' placeholder="Start Date.." />
+<input class="edate" type="text" ng-model='eDate' placeholder="End Date.." />
+    
+    <button type='button' ng-click='getGameData()'>get data</button>
+    <div class='col-md-12'>
+<select ng-model='selected'>
+                <option ng-repeat="d in gameDatas|orderBy :'date'" value='{{d._id}}'>{{d.date}}</option>
+              </select>
+<canvas ng-click="showData()" id='simulation' width=800 height="400" style="border:1px solid">
+              </canvas>
+</div>
+<!--/simulation-->
+</div>
