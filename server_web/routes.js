@@ -37,6 +37,7 @@ router.post('/query-gamedata-month', auth, ctrlGameData.queryMonth);
 router.post('/post-gamedata',auth, ctrlGameData.postGameData);
 router.post('/generate-gamedata',auth, ctrlGameData.generateGameData);
 router.post('/get-gamedata-by-id',auth,ctrlGameData.getGameDataById);
+router.post('/getGameDataForPatient',auth,ctrlGameData.getGameDataForPatient)
 //messages
 router.post('/doctor-post-message', auth, ctrlMessages.doctorPostMessage);
 router.post('/patient-post-message', auth, ctrlMessages.patientPostMessage);

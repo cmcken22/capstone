@@ -10,6 +10,12 @@ var gameDataSchema   = new Schema({
     date: { type: Date, default: Date.now },
     time: Number,//thime it took to complete
     pressure: [],
+    X:[],
+    Y:[],
+    pressureA:[],
+    pressureB:[],
+    pressureC:[]
+    
 });
 
 module.exports = mongoose.model('gameData', gameDataSchema);

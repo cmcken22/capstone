@@ -60,7 +60,19 @@
         var canvas= document.getElementById('simulation');
            var ctx= canvas.getContext("2d");
         go= $interval(function(){
-           ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
+          
+          var h=$scope.GD[0].pressure[i]*5;
+          var color= 'hsl('+h+',75%,100%)'
+        console.log(color);
+           //ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
+            ctx.beginPath();
+            ctx.arc(3*i, 3*i,5, 0, 2 * Math.PI, false);
+            ctx.fillStyle ='hsl('+h+',75%,50%)';
+            console.log(ctx.fillStyle)
+            ctx.fill();
+            ctx.lineWidth = 1;
+            
+            ctx.closePath();
            i++;
         }, 1000, dataSize);
         });

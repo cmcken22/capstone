@@ -100,6 +100,12 @@
         _id:data
       });
     };
+    var getGameDataForPatient = function(data){
+      return $http.post('/api/getGameDataForPatient',
+      {
+        patient:data
+      });
+    }
     var generateGameData = function () {
       console.log('getting');
       return $http.post('/api/generate-gamedata');
@@ -157,12 +163,13 @@
       getExercise : getExercise,
       getSingleExercise : getSingleExercise,
       postExercise : postExercise,
-      getEvent : getEvents,
+      getEvents : getEvents,
       getEventByPatientId : getEventByPatientId,
       postEvent : postEvent,
       getPatientEvents : getPatientEvents,
       
       getGameData : getGameData,
+      getGameDataForPatient:getGameDataForPatient,
       getGameDataById:getGameDataById,
       postGameData : postGameData,
       querySingleDate: querySingleDate,

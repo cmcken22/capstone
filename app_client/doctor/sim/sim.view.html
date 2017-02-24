@@ -17,7 +17,7 @@
 <select ng-model='selected'>
                 <option ng-repeat="d in gameDatas|orderBy :'date'" value='{{d._id}}'>{{d.date}}</option>
               </select>
-<canvas ng-click="showData()" id='simulation' width=800 height="400" style="border:1px solid">
+<canvas ng-click="showData()" id='simulation' width=1000 height="500" style="border:3px solid">
               </canvas>
 </div>
 <!--/simulation-->

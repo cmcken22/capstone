@@ -15,7 +15,8 @@
       $scope.sInfo = {
       patient: "",
       doctor: authentication.currentUser()._id,
-      exercise:"",
+      exercise:null,
+      description:'',
       type: null,
       date:"",
       endTime:'',

@@ -5,16 +5,49 @@
   <sidebar></sidebar>
   
   <div id="page-content-wrapper">
-    <div class="container-fluid" ng-init='getEvents()'>
+    <div class="container-fluid" ng-init='getData() '>
+      
       <h1>Dashboard</h1>
       
-      <div class = 'col-lg-6 hh-panel'>
+      <div class = 'col-lg-6 hh-panel list-group'>
         <h2>Today's events!</h2>
+        <div ng-repeat='e in myEvents'>
+          <div class ='list-group-item'>
+          <div ng-if='e.type =="appointment"'>
+            <h3>Appointment with doctor {{doctorName}}</h3>
+            <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
+          </div>
+          <div ng-if='e.exercise != null'>
+            <h3>Exercise: {{e.exercise.name}}</h3>
+            <p>def: {{e.exercise.description}}</p>
+            <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
+            <p ng-if='e.description != null'><i>Note: {{e.description}} </i></p>
+          </div>
+          
+          </div>
+          <br>
+        </div>
       </div>
-      <div class='col-lg-1'></div>
-      <div class = 'col-lg-5 hh-panel'>
+      
+      <div class = 'col-lg-5 hh-panel pull-right'>
+            
+        <h2>Unread Messages:</h2>
+        <div ng-repeat='m in mssg'>
+          <h3>{{m.messageSubject}}</h3>
+          <h4>from {{doctorName}}</h4>
+          <p>{{m.messageBody}}</p>
+        </div>
+      </div>
+      <br>
+      <div class = 'col-lg-5 hh-panel pull-right'>
         <h2>Past Exercises</h2>
-      </div>
+        <div ng-repeat='g in myGameData' class='list-group-item'>
+          <h4>{{g.exercise.name}}</h4> 
+          <p>completed on {{g.date.getFullYear()}}/{{g.date.getMonth()}}/{{g.date.getDate()}}
+          at {{g.date.getHours()}}:{{g.date.getMinutes()}}</p>
+        </div>      
+        </div>
+      
       
       
     </div>

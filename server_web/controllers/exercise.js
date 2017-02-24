@@ -17,6 +17,7 @@ module.exports.getExercises = function(req, res) {
 
 module.exports.getSingleExercise = function(req, res) {
     console.log(req.route.path);
+    console.log(req.body.exercise)
     exercise.find({ _id : req.body.exercise}, function(err, data){
         if(err){ return err; }
         console.log(data);

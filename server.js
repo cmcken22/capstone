@@ -22,6 +22,15 @@ var webAPI = require('./server_web/web_server');
 app.use('/api', webAPI.router.routes);
 app.use(webAPI.router.sendHTML);
 
+var io2 = require('socket.io').listen(8081);
+
+io2.sockets.on('connection', function (socket2) {
+  console.log('How about this you piece of trash?');
+
+  socket2.on('disconnect', function () {
+    console.log('Fuck you');
+  });
+});
 
 var socketAPI = require('./server_socket/server_socket');
 io.on('connection', socketAPI.onConnection);

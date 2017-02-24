@@ -32,7 +32,17 @@ module.exports.querySingleDate = function(req, res) {
         res.json(data);
     });
 };
-
+module.exports.getGameDataForPatient = function(req,res)
+{
+    console.log(req.route.path)
+    console.log(req.body.patient)
+    
+    gameData.find({patient:req.body.patient},function(err,data){
+        if(err){return err}
+        res.json(data);
+    })
+    
+}
 module.exports.queryDateRange = function(req, res) {
     
     console.log(req.route.path);
