@@ -8,22 +8,114 @@ module.exports.onConnection = function(socket){
     
     console.log('New Socket Connection');
     
-    socket.on('post-gamedata',function(data){
-	    console.log('Game is Finished');
+    socket.on('post-gamedata',function(data)
+    {
+    	
+    	
+    	
+    	
+    	//event.findOne(_id: data.eventID)
+    	
+    	
+	    console.log(data);
+	    console.log(data.canvasX);
+	    
 	    var newPost = new gameData();
-	    console.log(newPost._id); 
+	    
 	    newPost.date = Date.now();
-        newPost.time = data.time;
-
-        newPost.save(function(err){
-        //here
+	    newPost.timeStamp = data.timeStamp;
+        newPost.exerciseDuration = data.timeStamp[data.timeStamp.length-1];
+		newPost.canvasX = data.canvasX;
+		newPost.canvasY = data.canvasY;
+		newPost.pressureAxial = data.pressureAxial;
+		newPost.pressureA = data.pressureA;
+		newPost.pressureB = data.pressureB;
+		newPost.pressureC = data.pressureC;
+		newPost.penX = data.penX;
+		newPost.penY = data.penY;
+		newPost.penZ = data.penZ;
+		newPost.penQw = data.penQw;
+		newPost.penQx = data.penQx;
+		newPost.penQy = data.penQy;
+		newPost.penQz = data.penQz;
+		
+		console.log("Let's see if that worked...");
+		console.log(newPost);
+		
+		// Make sure data corresponds to actual event
+    	event.findById({_id: data.eventID}, function(err, event){
+	        if(err){
+	            console.log(err)
+	           // socket.emit(err);
+	        }
+	        if(event)
+	        {
+	        	console.log('Succesfully found this event ' + event._id);
+	        	
+	        	//If we find it, let's save it, then give it's ID to event, then save that
+	        	newPost.save(function(err) 
+	        	{
+	        	    if(err)
+	        	    {
+	        	    	//Might be worth it to send a message back to Unity if we have time
+            			console.log(err);
+	        	    }else
+	        	    {
+	        	    	//Here we can now save the gameData to the corresponding event and mark
+	        	    	//it as compelete.
+	        	    	console.log('Debug test one');
+	        	    	event.gameData = newPost._id;
+	        	    	event.completed = true;
+	        	    	
+	        	    	event.save(function(err) 
+	        	    	{
+	        	    		if(err)
+	        	    		{
+	        	    			//Again, may be worth doing something in here to notify Unity
+	        	    			//something went wrong, low priority
+	        	    		}else
+	        	    		{
+	        	    			
+	        	    			console.log('Event should have saved');
+	        	    	
+			        	    	var check = mongoose.model('event');
+			        	    	//Testing if the event actually saved and what it's doing
+						    	check.findOne({_id: data.eventID},function(err,eventTest)
+						        {
+						        	if(err) throw err;
+						        	console.log('Without populate....');
+						        	console.log(eventTest);
+						        	
+						        	console.log('Checking if data is saved in object...');
+						        	mongoose.model('gameData').findById(eventTest.gameData,
+							        	function(err,dataTest)
+							        	{
+							        		if(err) throw err;
+							        		else
+							        			console.log(dataTest);
+							        	});
+						        });
+						        
+						    	check.find({_id: data.eventID}).populate('gameData').exec(function(err,eventTest)
+						        {
+						        	if(err) throw err;
+						        	console.log('With populate....');
+						        	console.log(eventTest);
+						        });
+	        	    		}
+	        	    	});
+	        	    	
+	        	    	
+	        	    }
+	        	});
+	        	
+	        }
+	    });
+	    
+	    	
+	    
+		});
         
-        	console.log(newPost._id);
-            
-            
-            if(err) console.log(err);
-        })
-	});
 	
 	socket.on('login',function(data){
 	    console.log('LOGIN');
