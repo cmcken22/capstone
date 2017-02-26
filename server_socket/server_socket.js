@@ -11,7 +11,7 @@ module.exports.onConnection = function(socket){
     socket.on('post-gamedata',function(data)
     {
     	
-    	
+    	console.log('hello hello');
     	
     	
     	//event.findOne(_id: data.eventID)
@@ -21,7 +21,15 @@ module.exports.onConnection = function(socket){
 	    console.log(data.canvasX);
 	    
 	    var newPost = new gameData();
+	    newPost.patient = data.patientID;
 	    
+	    // event.findById(data.eventID, 
+	    // function(err, test)
+	    // {
+	    // 	if(err) throw err;
+	    // 	console.log('Did we find something: ' + test.exercise);
+	    // 	newPost.exercise = test.exercise;
+	    // });
 	    newPost.date = Date.now();
 	    newPost.timeStamp = data.timeStamp;
         newPost.exerciseDuration = data.timeStamp[data.timeStamp.length-1];
@@ -52,6 +60,11 @@ module.exports.onConnection = function(socket){
 	        {
 	        	console.log('Succesfully found this event ' + event._id);
 	        	
+	        	newPost.exercise = event.exercise;
+	        	
+	        	console.log('TESTING ONCE AGAIN!');
+	        	console.log(newPost);
+	        	
 	        	//If we find it, let's save it, then give it's ID to event, then save that
 	        	newPost.save(function(err) 
 	        	{
@@ -65,7 +78,9 @@ module.exports.onConnection = function(socket){
 	        	    	//it as compelete.
 	        	    	console.log('Debug test one');
 	        	    	event.gameData = newPost._id;
-	        	    	event.completed = true;
+	        	    	
+	        	    	//!!!Remember to change this 
+	        	    	event.completed = false;
 	        	    	
 	        	    	event.save(function(err) 
 	        	    	{

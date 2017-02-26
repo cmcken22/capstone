@@ -54,27 +54,26 @@
             $scope.GD =data;
             
             console.log($scope.GD[0])
-        var dataSize=$scope.GD[0].pressure.length;
-        var timeInt = $scope.GD.time/dataSize;
+        var dataSize=$scope.GD[0].pressureAxial.length;
+        //var timeInt = $scope.GD.time/dataSize;
         var i=0;
         var canvas= document.getElementById('simulation');
            var ctx= canvas.getContext("2d");
         go= $interval(function(){
           
-          var h=$scope.GD[0].pressure[i]*5;
-          var color= 'hsl('+h+',75%,100%)'
-        console.log(color);
+          var h=120 -$scope.GD[0].pressureAxial[i]/5;
+         
            //ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
             ctx.beginPath();
-            ctx.arc(3*i, 3*i,5, 0, 2 * Math.PI, false);
+            ctx.arc($scope.GD[0].canvasX[i],$scope.GD[0].canvasY[i] ,5, 0, 2 * Math.PI, false);
             ctx.fillStyle ='hsl('+h+',75%,50%)';
-            console.log(ctx.fillStyle)
+            //console.log(ctx.fillStyle)
             ctx.fill();
             ctx.lineWidth = 1;
             
             ctx.closePath();
            i++;
-        }, 1000, dataSize);
+        }, 100, dataSize);
         });
         
       }
