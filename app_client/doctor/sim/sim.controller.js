@@ -62,21 +62,41 @@
         go= $interval(function(){
           
           var h=120 -$scope.GD[0].pressureAxial[i]/5;
-         
+          ctx.fillStyle = '#FFFFFF'
+          ctx.fillRect(700,0,300,500);
            //ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
             ctx.beginPath();
-            ctx.arc($scope.GD[0].canvasX[i],$scope.GD[0].canvasY[i] ,5, 0, 2 * Math.PI, false);
+            ctx.arc($scope.GD[0].canvasX[i]-300,$scope.GD[0].canvasY[i]-100 ,5, 0, 2 * Math.PI, false);
             ctx.fillStyle ='hsl('+h+',75%,50%)';
             //console.log(ctx.fillStyle)
             ctx.fill();
             ctx.lineWidth = 1;
             
             ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.arc(800,100,$scope.GD[0].pressureA[i],0,2*Math.PI,false);
+            ctx.fillStyle ='#5642f4';
+            ctx.fill();
+            ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.arc(800,250,$scope.GD[0].pressureB[i],0,2*Math.PI,false);
+            ctx.fillStyle ='#ae3de2';
+            ctx.fill();
+            ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.arc(800,400,$scope.GD[0].pressureC[i],0,2*Math.PI,false);
+            ctx.fillStyle ='#dd1ab6';
+            ctx.fill();
+            ctx.closePath();
            i++;
-        }, 100, dataSize);
+        }, 50, dataSize);
         });
         
       }
   };
 
 })();
+

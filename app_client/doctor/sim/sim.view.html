@@ -1,24 +1,35 @@
 <navigation></navigation>
 
 <div id='main-wrapper' ng-init="getData()">
-<sidebar></sidebar>
-<select ng-model="patient" >
-    <option ng-repeat='p in allPatients' value='{{p._id}}'>{{p.name}}</option>
-</select>
-<select ng-model="exercise">
-    <option ng-repeat='e in allex' value='{{e._id}}'>{{e.name}}</option>
-</select>
-<p>show exercises between:</p>
-<input class="sdate" type="text" ng-model='sDate' placeholder="Start Date.." />
-<input class="edate" type="text" ng-model='eDate' placeholder="End Date.." />
-    
-    <button type='button' ng-click='getGameData()'>get data</button>
-    <div class='col-md-12'>
-<select ng-model='selected'>
-                <option ng-repeat="d in gameDatas|orderBy :'date'" value='{{d._id}}'>{{d.date}}</option>
-              </select>
-<canvas ng-click="showData()" id='simulation' width=1000 height="500" style="border:3px solid">
+    <sidebar></sidebar>
+    <form class='form-horizontal'>
+        <fieldset>
+            <div class='form-group'>
+                <select ng-model="patient" class='form-control'>
+        <option ng-repeat='p in allPatients' value='{{p._id}}'>{{p.name}}</option>
+    </select>
+                <select ng-model="exercise" class='form-control'>
+        <option ng-repeat='e in allex' value='{{e._id}}'>{{e.name}}</option>
+    </select>
+            </div>
+            <div class='form-group'>
+                <p>show exercises between:</p>
+                <input class="sdate form-control" type="text" ng-model='sDate' placeholder="Start Date.." />
+                <input class="edate form-control" type="text" ng-model='eDate' placeholder="End Date.." />
+            </div>
+            <div class='form-group'>
+                <button type="submit" class="btn btn-primary" ng-click='getGameData()'>Get Data</button>
+
+            </div>
+            <div class='form-group'>
+                <select ng-model='selected' class='form-control'>
+                    <option ng-repeat="d in gameDatas|orderBy :'date'"value='{{d._id}}'>{{d.date}}</option>
+                  </select>
+            </div>
+        </fieldset>
+    </form>
+    <canvas ng-click="showData()" id='simulation' width=1000 height="500" style="border:3px solid">
               </canvas>
-</div>
-<!--/simulation-->
+
+    <!--/simulation-->
 </div>

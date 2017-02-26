@@ -295,10 +295,10 @@
             for(var i=0; i<data.length; i++){
                 labels[i] = i;
                 var avg = 0;
-                for(var j=0; j<data[i].pressure.length; j++){
-                    avg += data[i].pressure[j];
+                for(var j=0; j<data[i].pressureAxial.length; j++){
+                    avg += data[i].pressureAxial[j];
                 }
-                graphData[i] = avg/data[i].pressure.length;
+                graphData[i] = avg/data[i].pressureAxial.length;
                 
             }
             
@@ -319,10 +319,10 @@
             console.log(exerciseName);
             var graphData = [];
             var labels = [];
-            for(var i=0; i<data.pressure.length; i++){
-                console.log(data.pressure[i]);
+            for(var i=0; i<data.pressureAxial.length; i++){
+                console.log(data.pressureAxial[i]);
                 labels[i] = i;
-                graphData[i] = data.pressure[i];
+                graphData[i] = data.pressureAxial[i];
             }
             
             var dataset = {
