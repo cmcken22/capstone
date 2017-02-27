@@ -16,26 +16,26 @@
         
         vm.allExercises = [];
         vm.allPatients = [];
-        
+        vm.originalObject = null;
         vm.graphDisplayed = false;
         vm.zoom = false;
-        
+        vm.showSim =false;
         vm.options = {
             mainGraph: "",
             modalGraph: ""
-        }
-        
-        vm.options.modalGraph = {
-            scales: {
-                yAxes: [{ scaleLabel: { display: true, labelString: 'Pressure Values' }}],
-                // xAxes: [{ scaleLabel: { /*display: true,*/ labelString: 'Time (Seconds)' }}],
-             }
         }
         
         vm.options.mainGraph = {
             scales: {
                 yAxes: [{ scaleLabel: { display: true, labelString: 'Average Pressure Values' }}],
                 xAxes: [{ scaleLabel: { display: true, labelString: 'gameData Objects' }}],
+             }
+        }
+        
+        vm.options.modalGraph = {
+            scales: {
+                yAxes: [{ scaleLabel: { display: true, labelString: 'Pressure Values' }}],
+                xAxes: [{ scaleLabel: { display: true, labelString: 'Time (Seconds)' }, ticks: { autoSkip: false } }],
              }
         }
         
@@ -319,18 +319,15 @@
             console.log(exerciseName);
             var graphData = [];
             var labels = [];
-            var ts =0;
+            var ts = 0;
             for(var i=0; i<data.pressureAxial.length; i++){
-                console.log(data.pressureAxial[i]);
-                console.log(ts)
-                if(i%50 ==0){
-                    labels[i]= ts;
+                if(i%50 == 0){
+                    labels[i] = ts;
                     ts++;
                 }
                 else {
-                    labels[i]='';
+                    labels[i] = '';
                 }
-                
                 graphData[i] = data.pressureAxial[i];
             }
             
@@ -369,7 +366,7 @@
                     datasets: vm.graphData.datasets,
                 },
                 options : vm.options.mainGraph
-            };
+            }
             
             var graph = new Chart(document.getElementById('my-graph').getContext('2d'), config);
             oldCanvas.remove();
@@ -389,6 +386,11 @@
                     date.setMinutes(date.getTimezoneOffset());
                     vm.modal.details = date.toDateString();
                     vm.modal.gameObject = originalDataObject;
+                    
+                    console.log('point Index: ' + vm.graphData.index);
+                    console.log('dataset Index: ' + vm.graphData.datasetIndex);
+                    
+                    vm.originalObject = originalDataObject;
                     
                     $('#myModal').modal('show');
                     vm.displayObject(originalDataObject, vm.graphData.datasetIndex);
@@ -422,7 +424,7 @@
                     datasets: vm.graphData.datasets,
                 },
                 options : vm.options.modalGraph
-            };
+            }
             
             var graph = new Chart(document.getElementById('my-modalGraph').getContext('2d'), config);
             oldCanvas.remove();
@@ -459,6 +461,7 @@
                 var datasetIndex = vm.graphData.datasetIndex;
                 console.log(datasetIndex);
                 var nextDataObject = vm.graphData.storedObjects[vm.graphData.datasetIndex][vm.graphData.index];
+                vm.originalObject = nextDataObject;
                 console.log(nextDataObject);
                 var date = new Date(nextDataObject.date);
                 date.setMinutes(date.getTimezoneOffset());
@@ -481,6 +484,7 @@
                 var datasetIndex = vm.graphData.datasetIndex;
                 console.log(datasetIndex);
                 var prevDataObject = vm.graphData.storedObjects[vm.graphData.datasetIndex][vm.graphData.index];
+                vm.originalObject = prevDataObject;
                 console.log(prevDataObject);
                 var date = new Date(prevDataObject.date);
                 date.setMinutes(date.getTimezoneOffset());

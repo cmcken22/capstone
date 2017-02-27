@@ -49,19 +49,25 @@
           dataService.queryDateRange($scope.sDate,$scope.eDate,$scope.patient,$scope.exercise)
           .success(function(data){$scope.gameDatas=data; console.log(data)})
       }
-      $scope.showData=function(ctx){
-          console.log($scope.selected)
+      $scope.setGD = function(){
           dataService.getGameDataById($scope.selected).success(function(data){
             $scope.GD =data;
+            $scope.showData($scope.GD[0]);
+      })
+          
+      };
+      $scope.showData=function(gameD){
+          var ctx = $scope.context;
+          
             
-            console.log($scope.GD[0])
-        var dataSize=$scope.GD[0].pressureAxial.length;
+            console.log(gameD)
+        var dataSize=gameD.pressureAxial.length;
         //var timeInt = $scope.GD.time/dataSize;
         var i=0;
        
         go= $interval(function(){
-          console.log($scope.GD[0].pressureAxial[i])
-          var h=120 -$scope.GD[0].pressureAxial[i]/8.3;
+          console.log(gameD.pressureAxial[i])
+          var h=120 -gameD.pressureAxial[i]/8.3;
            ctx.fillStyle='#7cc9f4'
            ctx.beginPath();
             ctx.arc(800,50,23,Math.PI,1.5*Math.PI,false);
@@ -74,7 +80,7 @@
           // ctx.fillRect(805,55,140,390);
            //ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
             ctx.beginPath();
-            ctx.arc($scope.GD[0].canvasX[i]/2.3,500-$scope.GD[0].canvasY[i]/2,5, 0, 2 * Math.PI, false);
+            ctx.arc(gameD.canvasX[i]/2.3,500-gameD.canvasY[i]/2,5, 0, 2 * Math.PI, false);
             ctx.fillStyle ='hsl('+h+',75%,50%)';
             //console.log(ctx.fillStyle)
             ctx.fill();
@@ -83,19 +89,19 @@
             ctx.closePath();
             
             ctx.beginPath();
-            ctx.arc(875,125,$scope.GD[0].pressureA[i],0,2*Math.PI,false);
+            ctx.arc(875,125,gameD.pressureA[i],0,2*Math.PI,false);
             ctx.fillStyle ='#5642f4';
             ctx.fill();
             ctx.closePath();
             
             ctx.beginPath();
-            ctx.arc(875,250,$scope.GD[0].pressureB[i],0,2*Math.PI,false);
+            ctx.arc(875,250,gameD.pressureB[i],0,2*Math.PI,false);
             ctx.fillStyle ='#ae3de2';
             ctx.fill();
             ctx.closePath();
             
             ctx.beginPath();
-            ctx.arc(875,375,$scope.GD[0].pressureC[i],0,2*Math.PI,false);
+            ctx.arc(875,375,gameD.pressureC[i],0,2*Math.PI,false);
             ctx.fillStyle ='#dd1ab6';
             ctx.fill();
             ctx.closePath();
@@ -107,8 +113,14 @@ ctx.fillText("Index",875,200);
 ctx.fillText("Middle",875,325);
            i++;
         }, 50, dataSize);
-        });
+    
         
+      }
+      $scope.initFromModal= function(GD){
+          $scope.initCanvas();
+         console.log(GD)
+         $scope.showData(GD);
+         
       }
       $scope.initCanvas = function(){
          var canvas= document.getElementById('simulation');

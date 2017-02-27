@@ -191,18 +191,24 @@
                 <div class='graph' id='modalGraph'>
                   <canvas id="my-modalGraph"></canvas>
                 </div>
+                <div ng-controller='simCtrl'>
+                   <canvas ng-show="vm.showSim" ng-init="initFromModal(vm.originalObject)" id='simulation' width=1000 height="500" >
+                </div>
                   
-                <div ng-if="vm.graphDisplayed == true">
+                <div ng-if="vm.graphDisplayed == true" ng-hide='vm.showSim'>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','modal')">line</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','modal')">bar</button>
-                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','modal')">pie</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">simulation</button>
+                </div>
+                <div ng-show="vm.showSim">
+                  <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">hide</button>
                 </div>
               </div><!-- graphArea -->
            
             </div>
                <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
             
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
