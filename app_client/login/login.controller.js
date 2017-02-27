@@ -33,7 +33,7 @@
             window.location = 'doctor';
         });
     };
-    
+ 
     vm.registerSubmit = function () {
       console.log('Submitting registration');
       authentication

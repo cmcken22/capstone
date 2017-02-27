@@ -15,34 +15,45 @@
     function calendarCtrl($compile, $location, dataService, $scope) {
         var vm = this;
         vm.events=[];
-
+        
+        vm.populatedEvents =[];
         vm.getEvents = function() {
             dataService.getEvents().success(function(data) {
                     
                     vm.events = data;
-                    console.log(vm.events)
+                   
+                    vm.populateEvents();
+                    console.log(vm.populatedEvents)
+                    vm.cal();
                 })
                 .error(function(e) {
                     console.log(e);
                 });
         }
-        // vm.getEvents();
-        // vm.populatedEvents = new Array();
-        // vm.populateEvents = function(events) {
-        //     for (var i = 0, max = events.length; i < max; i++) {
-        //         var event = new Event();
-                
-        //         //fill event properties
-        //         event.title =  events[i].title;
-        //         event.start = events[i].date;
-        //         event.patient = events[i].patient;//john smith
-        //         event.exercise = event[i].exercise;
-        //         //Add
-        //         vm.populateEvents.push(event);
-        //     }
-        // vm.populateEvents(vm.events);
+        vm.getEvents();
+        
+        vm.populateEvents = function() {
+             var event= {
+                 title:'',
+                 start:'',
+                 allDay:1,
+                //  patient:'',
+                //  exercise:''
+             };
+            for (var i = 0, max = vm.events.length; i < max; i++) {
+              
+              
+                //fill event properties
+              event.title =  vm.events[i]._id;
+               event.start = new Date(vm.events[i].date);
+            //   event.patient = vm.events[i].patient;//john smith
+            //   event.exercise = vm.events[i].exercise;
+            //     //Add
+                vm.populatedEvents.push(event);
+            }}
+       // vm.populateEvents(vm.events);
        
-       // vm.events
+       
 
 
 
@@ -138,7 +149,8 @@
 
 
 
-        $('#calendar').fullCalendar({
+       vm.cal = function(){ 
+           $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
                 center: 'title',
@@ -149,13 +161,7 @@
             navLinks: true, // can click day/week names to navigate views
             editable: true,
             eventLimit: true, // allow "more" link when too many events
-            events: [{
-                title: 'All Day Event',
-                start: '2017-02-01',
-                url: '',
-                patient: "58a2492c17180e1a95892b86", //john smith
-                exercise: '58a293e70457a8252eead52e', //first exercise - get pumped
-            }],
+            events: vm.populatedEvents ,
             eventClick: function(event) {
                 console.log(event);
 
@@ -168,8 +174,8 @@
                     return 0;
                 }
             }
-        });
-
+        });}
+        //$('#calendar').fullCalendar('updateEvents', vm.populatedEvents);
       //  $('#calendar').fullCalendar('addEventSource', vm.events);
       //  $('#calendar').fullCalendar('rerenderEvents');
 

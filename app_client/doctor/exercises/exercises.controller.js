@@ -28,7 +28,7 @@
         vm.options.modalGraph = {
             scales: {
                 yAxes: [{ scaleLabel: { display: true, labelString: 'Pressure Values' }}],
-                xAxes: [{ scaleLabel: { display: true, labelString: 'Time (Seconds)' }}],
+                // xAxes: [{ scaleLabel: { /*display: true,*/ labelString: 'Time (Seconds)' }}],
              }
         }
         
@@ -319,9 +319,18 @@
             console.log(exerciseName);
             var graphData = [];
             var labels = [];
+            var ts =0;
             for(var i=0; i<data.pressureAxial.length; i++){
                 console.log(data.pressureAxial[i]);
-                labels[i] = i;
+                console.log(ts)
+                if(i%50 ==0){
+                    labels[i]= ts;
+                    ts++;
+                }
+                else {
+                    labels[i]='';
+                }
+                
                 graphData[i] = data.pressureAxial[i];
             }
             

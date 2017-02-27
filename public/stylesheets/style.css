@@ -3,6 +3,7 @@
 lightblue: #54b4eb
 blue: #2FA4E7
 */
+
 .form-control + .select2 {
     width:100% !important;
     outline:none !important;
