@@ -16,7 +16,7 @@
       return $http.get('/api/profile');
     };
     var getPatients = function () {
-      console.log('getPatients Service')
+      //console.log('getPatients Service')
       return $http.get('/api/get-patients');
     };
     var getDoctor = function () {
@@ -60,7 +60,7 @@
     };
     var getSingleExercise = function(data){
       console.log('Sending to server:')
-      console.log(data);
+      //console.log(data);
       return $http.post('/api/get-single-exercise', {
         exercise: data
       });

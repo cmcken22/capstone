@@ -5,51 +5,136 @@
   <sidebar></sidebar>
   
   <div id="page-content-wrapper">
-    <div class="container-fluid" ng-init='getData()'>
+    <div class="container-fluid">
       
       <h1>Dashboard</h1>
       
-      <div class = 'col-lg-6 hh-panel list-group'>
-        <h2>Today's events!</h2>
-        <div ng-repeat='e in myEvents'>
-          <div class ='list-group-item'>
-          <div ng-if='e.type =="appointment"'>
-            <h3>Appointment with doctor {{doctorName}}</h3>
-            <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
+      <div class = 'col-lg-6 nopadding'>
+        <div class='hh-masonry hh-panel'>
+          
+          <div class='hh-content-pane'>
+            <legend>Today's events</legend>
+            
+            <div ng-repeat='e in myEvents'>
+              <div ng-if='e.type =="appointment"'>
+                <h5>Appointment with doctor {{doctorName}}</h3>
+                <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
+              </div>
+              <div ng-if='e.exercise != null'>
+                <h5>Exercise: {{e.exercise.name}}</h3>
+                <p>def: {{e.exercise.description}}</p>
+                <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
+                <p ng-if='e.description != null'><i>Note: {{e.description}} </i></p>
+              </div>
+            </div>
+            <p ng-show='myEvents.length == 0'>No planned exercises today.</p>
           </div>
-          <div ng-if='e.exercise != null'>
-            <h3>Exercise: {{e.exercise.name}}</h3>
-            <p>def: {{e.exercise.description}}</p>
-            <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
-            <p ng-if='e.description != null'><i>Note: {{e.description}} </i></p>
-          </div>
+        </div>
+      </div>
+      
+      <div class = 'col-lg-6 nopadding'>
+        <div class='hh-masonry hh-panel'>
+          <div class='hh-content-pane'>
+            <legend>Unread Messages</legend>
+          
+          <!--<div ng-repeat="m in mssg | orderBy:'date':true">-->
+            <div ng-repeat="m in mssg | orderBy:'date':true" ng-show='(m.read == false) && (m.receiver == thisUserId)'>
+              <div id='unread-{{m._id}}' class="panel panel-default" data-toggle="collapse" data-target="#{{m._id}}-col1" aria-expanded="false">
+                <div class="panel-heading message-unread">  
+                  <p><strong>From: {{doctorName}}</strong></p>
+                  <p>Subject: {{m.messageSubject}}</p>
+                  <span class="label label-default">{{vm.dateString(m.date)}}</span>
+                </div>
+                <div id ="{{m._id}}-col1" class="collapse panel-body">
+                  <p>{{m.messageBody}}</p>
+                  
+                  
+                  <div class="btn-group">
+                    <a class="btn btn-default" data-toggle="modal" data-target="#reply-modal" ng-click="vm.replyClick(m)">Reply</a>
+                  </div>
+                </div>
+              
+              </div>    
+            </div>
+            <p ng-show="vm.unreadCount == 0">No unread messages.</p>
           
           </div>
-          <br>
         </div>
       </div>
       
-      <div class = 'col-lg-5 hh-panel pull-right'>
-            
-        <h2>Unread Messages:</h2>
-        <div ng-repeat='m in mssg'>
-          <h3>{{m.messageSubject}}</h3>
-          <h4>from {{doctorName}}</h4>
-          <p>{{m.messageBody}}</p>
+      <div class = 'col-lg-6 nopadding'>
+        <div class='hh-masonry hh-panel'>
+          <h2>Past Exercises</h2>
+          <div ng-repeat='g in myGameData' class='list-group-item'>
+            <h4>{{g.exercise.name}}</h4> 
+            <p>completed on {{g.date.getFullYear()}}/{{g.date.getMonth()}}/{{g.date.getDate()}}
+            at {{g.date.getHours()}}:{{g.date.getMinutes()}}</p>
+          </div>      
         </div>
       </div>
-      <br>
-      <div class = 'col-lg-5 hh-panel pull-right'>
-        <h2>Past Exercises</h2>
-        <div ng-repeat='g in myGameData' class='list-group-item'>
-          <h4>{{g.exercise.name}}</h4> 
-          <p>completed on {{g.date.getFullYear()}}/{{g.date.getMonth()}}/{{g.date.getDate()}}
-          at {{g.date.getHours()}}:{{g.date.getMinutes()}}</p>
-        </div>      
+      
+      
+    </div>
+  </div>
+  
+  
+  <div id='reply-modal' class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Subject: {{vm.activeReply.messageSubject}}</h4>
         </div>
-      
-      
-      
+        
+        <div class="modal-body">
+          
+          <div class="panel panel-default">
+            <div class="panel-heading">  
+              <p><strong>From: {{vm.replySenderName(vm.activeReply.sender)}}</strong></p>
+              <p>Subject: {{vm.activeReply.messageSubject}}</p>
+              <span class="label label-default">{{vm.dateString(vm.activeReply.date)}}</span>
+            </div>
+            <div class="panel-body">
+              <p>{{vm.activeReply.messageBody}}</p>
+            </div>
+          </div>
+          <div class='row'>
+            <div ng-repeat="oneReply in vm.activeReply.replysData | orderBy:'date':false" class='col-lg-11 col-lg-offset-1'>
+              <div class="panel panel-default cancel-hover">
+                <div class="panel-heading">  
+                  <p><strong>From: {{vm.replySenderName(oneReply.sender)}}</strong></p>
+                  <span class="label label-default">{{vm.dateString(oneReply.date)}}</span>
+                </div>
+                <div class="panel-body">
+                  <p>{{oneReply.body}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="modal-footer">
+          
+          <form class="form-horizontal" ng-submit="vm.postReply()">
+            <fieldset>
+              <div class="form-group">
+                <label for="textArea" class="col-lg-2 control-label">Reply</label>
+                <div class="col-lg-10">
+                  <textarea class="form-control" rows="3" id="textArea" placeholder="Type a reply ..." ng-model="vm.replyBody" required></textarea>
+                </div>
+              </div>
+              <div class="alert-div">
+              </div>
+              <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                  <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
   

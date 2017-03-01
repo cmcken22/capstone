@@ -37,7 +37,7 @@
         var payload = token.split('.')[1];
         payload = $window.atob(payload);
         payload = JSON.parse(payload);
-       console.log(payload)
+       //console.log(payload)
         
         return {
           //the line for id, i hope it doesn't fuck shit up
@@ -68,7 +68,7 @@
       return $http.post('/api/login', user).success(function(data) {
         saveToken(data.token);
       }).error(function(msg){
-        console.log(msg);
+        //console.log(msg);
       });
     };
 

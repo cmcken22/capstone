@@ -59,7 +59,8 @@
       $scope.showData=function(gameD){
           var ctx = $scope.context;
           
-            
+          ctx.fillStyle='#FFFFFF'
+            ctx.fillRect(50,50,650,400);
             console.log(gameD)
         var dataSize=gameD.pressureAxial.length;
         //var timeInt = $scope.GD.time/dataSize;
@@ -80,7 +81,7 @@
           // ctx.fillRect(805,55,140,390);
            //ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
             ctx.beginPath();
-            ctx.arc(gameD.canvasX[i]/2.3,500-gameD.canvasY[i]/2,5, 0, 2 * Math.PI, false);
+            ctx.arc((gameD.canvasX[i]/3.41 )+50,400-(gameD.canvasY[i]/2.92)+50,3, 0, 2 * Math.PI, false);
             ctx.fillStyle ='hsl('+h+',75%,50%)';
             //console.log(ctx.fillStyle)
             ctx.fill();
@@ -112,12 +113,12 @@ ctx.fillText("Thumb",875,100);
 ctx.fillText("Index",875,200);
 ctx.fillText("Middle",875,325);
            i++;
-        }, 50, dataSize);
+        }, 20, dataSize);
     
         
       }
       $scope.initFromModal= function(GD){
-          $scope.initCanvas();
+         
          console.log(GD)
          $scope.showData(GD);
          
@@ -147,6 +148,10 @@ ctx.fillText("Middle",875,325);
             ctx.closePath();
             ctx.fill();
              ctx.stroke();
+             ctx.font = "30px Arial";
+              ctx.fillStyle='#2FA4E7'
+            ctx.textAlign = "center";
+    ctx.fillText("Click to start",400,250);
             $scope.context = ctx;
       }
   };

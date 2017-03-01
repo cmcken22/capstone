@@ -14,46 +14,55 @@
     // function calendarCtrl($compile, calendar, bootstrap, uiCalendarConfig) {
     function calendarCtrl($compile, $location, dataService, $scope) {
         var vm = this;
-        vm.events=[];
-        
-        vm.populatedEvents =[];
+        vm.events = new Array();
+
         vm.getEvents = function() {
             dataService.getEvents().success(function(data) {
-                    
+
                     vm.events = data;
-                   
-                    vm.populateEvents();
-                    console.log(vm.populatedEvents)
+                    console.log(vm.events)
+                    vm.populateEvents()
                     vm.cal();
                 })
                 .error(function(e) {
                     console.log(e);
                 });
         }
-        vm.getEvents();
         
+        
+        vm.getEvents();
+
+        vm.populatedEvents = new Array();
+        //vm.populateEvents(vm.events);
+
         vm.populateEvents = function() {
-             var event= {
-                 title:'',
-                 start:'',
-                 allDay:1,
-                //  patient:'',
-                //  exercise:''
-             };
             for (var i = 0, max = vm.events.length; i < max; i++) {
-              
-              
+                var event = {
+                    title:'',
+                    start:'',
+                    allDay:'',
+                    patient:'',
+                    exercise:'',
+                    gameData:'',
+                    url:''
+                };
+
                 //fill event properties
-              event.title =  vm.events[i]._id;
-               event.start = new Date(vm.events[i].date);
-            //   event.patient = vm.events[i].patient;//john smith
-            //   event.exercise = vm.events[i].exercise;
-            //     //Add
+                event.title = vm.events[i].patient;
+                event.start = vm.events[i].date;
+                event.allDay = 1;
+                event.patient = vm.events[i].patient; //john smith
+                event.exercise = vm.events[i].exercise;
+                event.gameData = vm.events[i].gameData;
+                
+                //Add
+                console.log(event);
                 vm.populatedEvents.push(event);
-            }}
-       // vm.populateEvents(vm.events);
-       
-       
+                console.log(vm.populatedEvents);
+            }
+        }
+
+
 
 
 
@@ -148,44 +157,58 @@
         };
 
 
+        vm.cal = function() {
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,basicWeek,basicDay'
+                },
 
-       vm.cal = function(){ 
-           $('#calendar').fullCalendar({
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,basicWeek,basicDay'
-            },
+                defaultDate: '2017-02-12',
+                navLinks: true, // can click day/week names to navigate views
+                editable: true,
+                eventLimit: true, // allow "more" link when too many events
+                events: vm.populatedEvents,
+                eventClick: function(event) {
+                    console.log(event);
 
-            defaultDate: '2017-02-12',
-            navLinks: true, // can click day/week names to navigate views
-            editable: true,
-            eventLimit: true, // allow "more" link when too many events
-            events: vm.populatedEvents ,
-            eventClick: function(event) {
-                console.log(event);
+                    $('#myModal').modal('show');
+                    vm.graph(event);
 
-                $('#myModal').modal('show');
-                vm.graph(event);
-
-                // vm.updateMainGraph(event);
-                if (event.url) {
-                    // window.open(event.url);
-                    return 0;
+                    // vm.updateMainGraph(event);
+                    if (event.url) {
+                        // window.open(event.url);
+                        return 0;
+                    }
+                },
+                
+                eventRender: function(event){
+                    var patient = event.patient; 
+                    var exercise = event.exercise;
+                    var gameData = event.gameData;
+                    
                 }
-            }
-        });}
-        //$('#calendar').fullCalendar('updateEvents', vm.populatedEvents);
-      //  $('#calendar').fullCalendar('addEventSource', vm.events);
-      //  $('#calendar').fullCalendar('rerenderEvents');
+                });
+        }
+
+        //  $('#calendar').fullCalendar('addEventSource', vm.events);
+        //  $('#calendar').fullCalendar('rerenderEvents');
 
         vm.graph = function(event) {
+            console.clear();
             console.log(event.start._d);
             var startDate = new Date(event.start._d);
             startDate.setMinutes(startDate.getTimezoneOffset());
-            console.log(startDate);
-
-            $dataService.queryDateRange(startDate, startDate, event.patient, event.exercise).success(function(data) {
+            console.log("START DATE: " + startDate);
+            var endDate = new Date(event.start._d);
+            endDate.setMinutes(endDate.getTimezoneOffset());
+            endDate.setDate(endDate.getDate() + 1);
+            console.log("END DATE: " + endDate);
+            console.log("PATIENT: " + event.patient);
+            console.log("EX: " + event.exercise);
+            dataService.queryDateRange(startDate, endDate, event.patient, event.exercise).success(function(data) {
+                console.log('Start: ' + startDate + ' and end date: ' + endDate);
                 console.log("DATA RETURNED");
                 console.log(data);
                 vm.updateMainGraph(data);
@@ -200,9 +223,9 @@
 
             var labels = [];
             var graphData = [];
-            for (var i = 0; i < data[0].pressure.length; i++) {
+            for (var i = 0; i < data[0].pressureAxial.length; i++) {
                 labels[i] = i;
-                graphData[i] = data[0].pressure[i];
+                graphData[i] = data[0].pressureAxial[i];
             }
 
             var config = {

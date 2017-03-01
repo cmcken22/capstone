@@ -18,6 +18,10 @@
                 <select name='exercise' class='form-control' id='exercise-select' ng-model='sInfo.exercise'>
                     <option ng-repeat="e in allex" value="{{e._id}}">{{e.name}}</option>
                 </select>
+                <div class='form-group col-lg-10 ng-hide' ng-show='sInfo.exercise !=null'>
+                    <label>Time limit:</label><input class= 'form-control' ng-model='sInfo.timeLimit' type ='text'/> 
+                    
+                </div>
                 </div>
                <div class='form-group col-lg-12 col-md-12'>
                 <select class='form-control' id='patient-select' ng-model='sInfo.patient'>
@@ -30,6 +34,10 @@
                     placeholder='Give us a little description! (optional)'></textarea>
                 </div>
                 <br>
+      <!--          timeLimit:'',-->
+      <!--alphaFilter:'',-->
+      <!--gripThreshold: '',-->
+      <!--axialThreshold:'' -->
                 <div class='form-group'>
                     <div class='col-md-12 col-lg-12' >
                     <input class="datetime form-control" type="text" ng-model='date' placeholder="Select Date.." />

@@ -69,7 +69,10 @@ module.exports.postEvent = function(req, res)
     newPost.endTime = req.body.endTime;
     newPost.eventLog= req.body.eventLog;
     newPost.completed = req.body.completed;
-    
+    newPost.timeLimit = req.body.timeLimit;
+    newPost.alphaFilter = req.body.alphaFilter;
+    newPost.gripThreshold = req.body.gripThreshold;
+    newPost.axialThreshold = req.body.axialThreshold;
    
         newPost.save(
             function(err)
@@ -97,7 +100,10 @@ module.exports.postEvent = function(req, res)
             newPost.endTime = req.body.endTime;
             newPost.eventLog= req.body.eventLog;
             newPost.completed = req.body.completed;
-            
+            newPost.timeLimit = req.body.timeLimit;
+            newPost.alphaFilter = req.body.alphaFilter;
+            newPost.gripThreshold = req.body.gripThreshold;
+            newPost.axialThreshold = req.body.axialThreshold;
            day.add(req.body.skip, req.body.rOption);
            eday.add(req.body.skip, req.body.rOption);
            

@@ -19,7 +19,8 @@
         vm.originalObject = null;
         vm.graphDisplayed = false;
         vm.zoom = false;
-        vm.showSim =false;
+        vm.showSim = false;
+        
         vm.options = {
             mainGraph: "",
             modalGraph: ""
@@ -39,27 +40,58 @@
              }
         }
         
+        vm.currentDate = {
+            date: '',
+            day: '',
+            month: '',
+            year: '',
+            string: ''
+        }
+        
+        vm.nextDate = {
+            date: '',
+            day: '',
+            month: '',
+            year: '',
+            string: '',  
+        }
+        
+        vm.setFormDate = function(){
+            vm.currentDate.date = new Date();
+            vm.currentDate.date.setHours(0,0,0,0);
+            console.log('CURRENT DATE: ' + vm.currentDate.date);
+            vm.currentDate.day      = vm.currentDate.date.getUTCDate();
+            vm.currentDate.month    = vm.currentDate.date.getUTCMonth()+1;
+            vm.currentDate.year     = vm.currentDate.date.getFullYear();
+            vm.currentDate.string   = vm.currentDate.month + '-' + vm.currentDate.day + '-' + vm.currentDate.year;  
+            console.log('CURRENT DATE STRING: ' + vm.currentDate.string);
+            
+            vm.nextDate.date = new Date();
+            vm.nextDate.date.setHours(0,0,0,0);
+            vm.nextDate.date.setDate(vm.nextDate.date.getDate() + 7);
+            console.log('NEXT DATE: ' + vm.nextDate.date);
+            vm.nextDate.day = vm.nextDate.date.getUTCDate();
+            vm.nextDate.month = vm.nextDate.date.getUTCMonth()+1;
+            vm.nextDate.year = vm.nextDate.date.getFullYear();
+            vm.nextDate.string = vm.nextDate.month + '-' + vm.nextDate.day + '-' + vm.nextDate.year;
+            console.log('NEXT DATE STRING: ' + vm.nextDate.string);
+        };
+        vm.setFormDate();
+        
         vm.form = {
             date : "",
-            month : "02/2017",
+            month : vm.currentDate.month + "/" + vm.currentDate.year,
             exercise : "ALL",
             patient: null,
-            startDate : "02-05-2017",
-            endDate : "02-07-2017",
+            startDate : vm.currentDate.string,  //todays date
+            endDate : vm.nextDate.string,       //a week from today
         }
         
         if($routeParams.param != undefined){
             console.log('PARAMS-------');
-            console.log("hello");
-            console.log($routeParams.param.patientID);
+            // console.log($routeParams.param.patientID);
             vm.form.patient = $routeParams.param.patientID;
             document.getElementById('patient-select').innerHTML = '<option>'+$routeParams.param.patientID+'</option>';
-        }
-        
-        vm.dummyData = {
-            date : "02-05-2017",
-            time : 7,
-            exercise : "100",
         }
         
         vm.modal = {
@@ -74,7 +106,7 @@
             type: 'line',
             datasetIndex: 0,
             index: 0,
-        };
+        }
         
         var color = Chart.helpers.color;
         vm.colors = [];
@@ -144,11 +176,8 @@
             $("#exercise-select-range").on("change", function() {
                 vm.form.exercise = $("#exercise-select-range").val();
             });
-        }
+        };
         
-        // -----------------------------
-        //        Date Pickers
-        // -----------------------------
         vm.initDatePickers = function(){
             $('#monthPicker').datepicker({
                 format: "mm/yyyy",
@@ -160,15 +189,9 @@
                 vm.form.month = $("#_monthPicker").val();
             });
             $('#monthPicker').datepicker("update", vm.form.month);
-           
-            $('#dummyDatePicker').datepicker({
-                format: "mm-dd-yyyy",
-                orientation: 'bottom',
-                autoclose: true,
-            }).on("changeDate", function() {
-                vm.dummyData.date = $("#dummyDatePickerVal").val();
-            });
-            $("#dummyDatePicker").datepicker("update", vm.dummyData.date);
+            
+            $("#_startDate").datepicker("update", vm.form.startDate);
+            $("#_endDate").datepicker("update", vm.form.endDate);
             
             $('.input-daterange').datepicker({
                 format: "mm-dd-yyyy",
@@ -178,17 +201,11 @@
                 vm.form.startDate = $("#_startDate").val();
                 vm.form.endDate = $("#_endDate").val();
             });
-            $("#_startDate").datepicker("update", vm.form.startDate);
-            $("#_endDate").datepicker("update", vm.form.endDate);
-        }
+            
+        };
         
         vm.initInputFields();
         vm.initDatePickers();
-        
-        vm.generateGameData = function(){
-            console.log('generating random data');
-            // $dataService.generateGameData();
-        };
         
 //----------------------------------------------------------------------------------------------
         
@@ -289,17 +306,19 @@
         };
         
         vm.graphAVG = function(data, index, exerciseName){
+            console.log('GRAPHING AVG');
             var graphData = [];
             var labels = [];
             
             for(var i=0; i<data.length; i++){
                 labels[i] = i;
                 var avg = 0;
+                console.log(i);
                 for(var j=0; j<data[i].pressureAxial.length; j++){
                     avg += data[i].pressureAxial[j];
                 }
                 graphData[i] = avg/data[i].pressureAxial.length;
-                
+                console.log(graphData[i]);
             }
             
             var dataset = {
@@ -325,7 +344,7 @@
                     labels[i] = ts;
                     ts++;
                 }
-                else {
+                else{
                     labels[i] = '';
                 }
                 graphData[i] = data.pressureAxial[i];
@@ -391,6 +410,8 @@
                     console.log('dataset Index: ' + vm.graphData.datasetIndex);
                     
                     vm.originalObject = originalDataObject;
+                    console.log('---------ORIGINAL OBJECT---------');
+                    console.log(vm.originalObject);
                     
                     $('#myModal').modal('show');
                     vm.displayObject(originalDataObject, vm.graphData.datasetIndex);
@@ -498,11 +519,6 @@
                 vm.graphData.index++; //undo
             }
         };
-        
-        // vm.setModal = function(title, details){
-        //     vm.modal.title = title;
-        //     vm.modal.details = details;
-        // };
         
         vm.setMonthString = function(currentMonth){
             var month;

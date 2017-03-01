@@ -3,7 +3,12 @@
 lightblue: #54b4eb
 blue: #2FA4E7
 */
-
+.nopadding{
+    padding:0px !important;
+}
+#simulation {
+    width:100%;
+}
 .form-control + .select2 {
     width:100% !important;
     outline:none !important;
@@ -62,6 +67,15 @@ navigation .navbar-default{
     box-shadow:5px 3px 20px 2px rgba(200,200,200,0.8);
     padding:10px 2%;
     background-color:#eee;
+    border:1px solid #ddd;
+}
+.hh-masonry {
+    margin:0px 5% 20px 0px;
+    width:95%;
+}
+.hh-content-pane{
+    padding:10px;
+    background-color:#fff;
     border:1px solid #ddd;
 }
 .no-margin{
@@ -363,6 +377,10 @@ li.active #sidebar-messages{
     }
     .navbar-nav>li{
         float:left;
+    }
+    .hh-masonry {
+        width:100%;
+        margin:0px 0px 20px 0px;
     }
     
 }

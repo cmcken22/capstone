@@ -35,6 +35,18 @@ var eventSchema   = new Schema({
         type:Date
     },
     //date that the exercise was completed
+    timeLimit:{
+        type: String,
+    },
+    alphaFilter:{
+        type:String
+    },
+    gripThreshold:{
+        type:String,
+    },
+    axialThreshold:{
+        type:String,
+    },
     completed:{
       type: Boolean,
     },

@@ -63,10 +63,13 @@ module.exports.queryDateRange = function(req, res) {
     console.log("Patient: ");
     console.log(req.body.patient);
     
-    gameData.find({ date : {$gte : startDate, $lte: endDate}, exercise: req.body.exercise, patient: req.body.patient}, function(err, data){
+    //gameData.find({ date : {$gte : new Date(startDate), $lte : new Date(endDate)}, exercise: req.body.exercise, patient: req.body.patient}, function(err, data){
+    gameData.find({ date : {$gte : startDate, $lte : endDate}, exercise: req.body.exercise, patient: req.body.patient}, function(err, data){
+    //gameData.find({ date : startDate}, function(err, data){
+    //gameData.find({ date : startDate, exercise: req.body.exercise, patient: req.body.patient}, function(err, data){
         if(err){ return err; }
-        console.log('DATA TO BE RETURNED: ');
-        console.log(data);
+        console.log('Start ' + startDate + ' end date: ' + endDate);
+        //console.log(data);
         res.json(data);
     });
 };

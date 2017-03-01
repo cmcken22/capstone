@@ -118,23 +118,26 @@
                 
                 <div class="form-group">
                   <div class="col-lg-5">
-                    <label for="patient-select-range" >Patient: </label>
+                    <label for="patient-select-range">Patient: </label>
                     <select class="form-control" id="patient-select-range">
                       <option></option>
               			</select>
                   </div>
                 </div>
+              
                 
                 <div class="form-group">
                   <div class="col-lg-5">
                     <label for="_startDate">Range: </label> 
                     <div class="input-group input-daterange">
-                  		<input id="_startDate" type="text" class="form-control"> 
+                  		<input id="_startDate" type="text" class="form-control" value={{vm.form.startDate}}> 
                   		<span class="input-group-addon">to</span>
-                  		<input id="_endDate" type="text" class="form-control">
+                  		<input id="_endDate" type="text" class="form-control" value={{vm.form.endDate}}>
                   	</div>
                 	</div>
                 </div>
+                
+              
                 
                 <br>
         
@@ -192,13 +195,15 @@
                   <canvas id="my-modalGraph"></canvas>
                 </div>
                 <div ng-controller='simCtrl'>
-                   <canvas ng-show="vm.showSim" ng-init="initFromModal(vm.originalObject)" id='simulation' width=1000 height="500" >
+                   <canvas ng-show="vm.showSim" ng-init ='initCanvas()'ng-click="initFromModal(vm.originalObject)" id='simulation' width=1000 height="500" >
                 </div>
                   
                 <div ng-if="vm.graphDisplayed == true" ng-hide='vm.showSim'>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','modal')">line</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','modal')">bar</button>
-                  <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">simulation</button>
+                  <!--<div ng-controller='simCtrl'>-->
+                    <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">simulation</button>
+                  <!--</div>-->
                 </div>
                 <div ng-show="vm.showSim">
                   <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">hide</button>

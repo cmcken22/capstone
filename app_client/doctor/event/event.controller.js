@@ -25,7 +25,11 @@
       skip:'1',
       rOption:'',
       repeat:null,
-      dateFinish:''
+      dateFinish:'',
+      timeLimit:'',
+      alphaFilter:'',
+      gripThreshold: '',
+      axialThreshold:'' 
     }
       //YYYY-MM-DD
       $scope.date
