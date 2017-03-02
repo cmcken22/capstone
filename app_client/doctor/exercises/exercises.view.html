@@ -7,34 +7,6 @@
   <div id="page-content-wrapper">
     <div class="container-fluid">
       
-      <style type="text/css">
-        #dummyData{
-          background-color: rgba(255, 0, 255, 0.7);
-          padding: 10px;
-        }
-        #pressure{
-          background-color: rgba(0, 255, 255, 0.7);
-          padding: 10px;
-        }
-        .hh-panel {
-          box-shadow: 5px 3px 20px 2px rgba(200,200,200,0.8);
-          padding: 10px 2%;
-          background-color: #eee;
-          border: 1px solid #ddd;
-        }
-        .tab-content {
-          padding: 10px;
-          background-color: #fff;
-          border: 1px solid #ddd;
-          border-top: 0px;
-        }
-        .modal{
-          top: 40px;
-        }
-        .h3x{
-          margin-top: 0px
-        }
-      </style>
       
       <br>
       
@@ -47,9 +19,8 @@
       <div class="hh-panel">
         
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#month" data-toggle="tab">View Monthly</a></li>
-          <!--<li><a href="#month2" data-toggle="tab">Month 2</a></li>-->
-          <li><a href="#range" data-toggle="tab">View Range</a></li>
+          <li class="active"><a href="#month" data-toggle="tab" ng-click="vm.clearGraph()">View Monthly</a></li>
+          <li><a href="#range" data-toggle="tab" ng-click="vm.clearGraph()">View Range</a></li>
         </ul>
         
         <div id="myTabContent" class="tab-content">
@@ -62,17 +33,17 @@
                 <legend>View by month</legend>
                 <div class="form-group">
                   <div class="col-lg-5">
-                    <label for="exercise-select">Exercise: </label>
-                    <select class="form-control" id="exercise-select">
-                      <option>ALL</option>
+                    <label for="patient-select">Patient: </label>
+                    <select class="form-control" id="patient-select">
+                      <option></option>
               			</select>
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <div class="col-lg-5">
-                    <label for="patient-select">Patient: </label>
-                    <select class="form-control" id="patient-select">
+                    <label for="exercise-select">Exercise: </label>
+                    <select class="form-control" id="exercise-select">
                       <option></option>
               			</select>
                   </div>
@@ -109,22 +80,21 @@
               <legend>View by Range:</legend>
                 <div class="form-group">
                   <div class="col-lg-5">
-                    <label for="exercise-select-range">Exercise: </label>
-                    <select class="form-control" id="exercise-select-range">
-                      <option>ALL</option>
-              			</select>
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <div class="col-lg-5">
                     <label for="patient-select-range">Patient: </label>
                     <select class="form-control" id="patient-select-range">
                       <option></option>
               			</select>
                   </div>
                 </div>
-              
+                
+                <div class="form-group">
+                  <div class="col-lg-5">
+                    <label for="exercise-select-range">Exercise: </label>
+                    <select class="form-control" id="exercise-select-range">
+                      <option></option>
+              			</select>
+                  </div>
+                </div>
                 
                 <div class="form-group">
                   <div class="col-lg-5">
@@ -162,7 +132,6 @@
             <div ng-if="vm.graphDisplayed == true">
               <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','main')">line</button>
               <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','main')">bar</button>
-              <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','main')">pie</button>
             </div>
             
           </div><!-- graphArea -->
@@ -184,8 +153,8 @@
               
               <div id='individualGraphArea' class="well">
                 <div ng-if="vm.zoom == true">
-                  <p class="h3x">exercise: {{vm.modal.gameObject.code}}</p>
-                  <p class="h3x">completion time: {{vm.modal.gameObject.time}}</p>
+                  <!--<p class="h3x">exercise: {{vm.modal.gameObject.code}}</p>-->
+                  <!--<p class="h3x">completion time: {{vm.modal.gameObject.time}}</p>-->
                   <button class="btn btn-primary btn-sml" ng-click="vm.prev()">prev</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.next()">next</button>
                 </div>

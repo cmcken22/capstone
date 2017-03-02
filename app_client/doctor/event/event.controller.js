@@ -5,32 +5,32 @@
     .module('mainApp')
     .controller('eventCtrl', eventCtrl)
    
-  eventCtrl.$inject = ['$scope', 'dataService','authentication'];
+  eventCtrl.$inject = ['$scope', 'dataService','authentication', '$routeParams'];
   
-  function eventCtrl($scope, dataService, authentication) {
+  function eventCtrl($scope, dataService, authentication, $routeParams) {
       //user,exercise, appointment, date/time
       //repetition/
-    console.log(authentication.currentUser());
+    // console.log(authentication.currentUser());
       
       $scope.sInfo = {
-      patient: "",
-      doctor: authentication.currentUser()._id,
-      exercise:null,
-      description:'',
-      type: null,
-      date:"",
-      endTime:'',
-      gameData:null,
-      completed:false,
-      skip:'1',
-      rOption:'',
-      repeat:null,
-      dateFinish:'',
-      timeLimit:'',
-      alphaFilter:'',
-      gripThreshold: '',
-      axialThreshold:'' 
-    }
+        patient: null,
+        doctor: authentication.currentUser()._id,
+        exercise:null,
+        description:'',
+        rOption: 'days',
+        skip: 1,
+        type: false,
+        date:"",
+        endTime:'',
+        gameData:null,
+        completed:false,
+        repeat:false,
+        dateFinish:'',
+        timeLimit:'',
+        alphaFilter:'',
+        gripThreshold: '',
+        axialThreshold:'' 
+      }
       //YYYY-MM-DD
       $scope.date
       $scope.startTime='';
@@ -44,9 +44,6 @@
       $scope.patients= {};//allpatients
       //repeating events stuff here
       //$scope.repeat=false;
-      //$scope.rOption='';//repeat option
-      //$scope.skip='1';//every X number of days
-      $scope.skipwhat='';
       //$scope.endDate='';//do the repetition until this date
     
       //++++++++++++++++++++++++++++++++++
@@ -66,8 +63,7 @@
           $scope.endDate = moment($(this).val(),'YYYY-MM-DD');
           $scope.sInfo.dateFinish= $scope.endDate.toJSON();//for some reason the picker itself doesn't actually count as text in the text box. go figure
           console.log('repeating until ' + $scope.endDate);
-
-      });;
+      });
       
       $('#starttimepick').timepicker({
           'timeFormat': 'H:i',
@@ -84,57 +80,42 @@
           //'minTime':$('#starttimepick').val()
       }).on('changeTime', function() {
           $scope.endTime = $(this).val();
-      });;
+      });
       
-      $("#patient-select").select2({
-        		  //data: $scope.sInfo.patient,
-        		  placeholder: "Select a patient"
-        		});
-        		$("#patient-select").on("change", function() {
-                $scope.sInfo.patient = $("#patient-select").val();
-            });
-        		$("#exercise-select").select2({
-        		 // data: $scope.sInfo.exercise,
-        		  placeholder: "Select an exercise"
-        		});
-        		$("#exercise-select").on("change", function() {
-                $scope.sInfo.exercise = $("#exercise-select").val();
-            });
-      
+  		$("#exercise-select").select2({
+  		  placeholder: "Select an exercise"
+  		});
+  		$("#exercise-select").on("change", function() {
+          $scope.sInfo.exercise = $("#exercise-select").val();
+      });
+
       (function() {
          
           for (var i = 1; i <= 30; i++) {
-              $(".1-100").append($('<option></option>').val(i).html(i))
+            $(".1-100").append($('<option></option>').val(i).html(i))
           }
+          
       })();
-      
       
       
     $scope.getExercise = function() {
       
       dataService.getExercise().success(function(data) {
-
-        console.log(data);
         $scope.allex = data;
       });
     };
-   
+    
+    
     $scope.getPatients = function(){
-      console.log('sup dude');
-      dataService.getPatients().then(function(res)
-      {
-        //so far this is useless because there are no patients
-        //so it should return the current user hopeful
-        
-        $scope.patients = res.data;
-        
+      dataService.getPatients().success(function(data){
+        $scope.patients = data;
       });
     };
-   
-    $scope.addEvent = function() {
+    var vm = this;
+    vm.addEvent = function() {
         //making the date into a moment 
-        $scope.startTime= $scope.startTime.split(':');
-        $scope.endTime=$scope.endTime.split(':');
+      $scope.startTime= $scope.startTime.split(':');
+      $scope.endTime=$scope.endTime.split(':');
       $scope.mom = moment($scope.date,"YYYY-MM-DD");
       $scope.mom.set('hour',$scope.startTime[0]);
       $scope.mom.set('minute',$scope.startTime[1])
@@ -143,23 +124,50 @@
       $scope.end.set('minute',$scope.endTime[1]);
       $scope.sInfo.date = $scope.mom.toJSON();
       $scope.sInfo.endTime =$scope.end.toJSON();
-      //$scope.sInfo.dateFinish = $scope.sInfo.toJSO
-      console.log($scope.sInfo.date);
-      console.log($scope.sInfo.endTime);
-      console.log("adding event (hopefully)")
-      console.log($scope.sInfo);
-         
-        dataService.postEvent($scope.sInfo).success(function(data){
-          console.log(data)
-        }).error(function(err) {
-          alert(err);
-        });
-    
-       
+      
+      dataService.postEvent($scope.sInfo).success(function(data){
+        jQuery('#new-event .alert-div').html('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>The event was successfully saved.</div>');
+      }).error(function(err) {
+        jQuery('#new-event .alert-div').html('<div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>There was an error saving the event.</div>');
+      });
     };
+    vm.exerciseInfo = {
+      name : '',
+      description : ''
+    }
+    vm.addExercise = function(){
+      dataService.postExercise(vm.exerciseInfo).success(function(data){
+        console.log(data)
+      })
+      .success(function(data){
+        vm.exerciseInfo.name = '';
+        vm.exerciseInfo.description = '';
+        jQuery('#new-exercise .alert-div').html('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>Your exercise was successfully saved.</div>');
+      })
+      .error(function(err) {
+        jQuery('#new-exercise .alert-div').html('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>There was an error saving the exercise.</div>');
+      });
+    }
+    $scope.getPatients();
+    $scope.getExercise();
+    
+    $("#patient-select").select2({
+  		  data: $scope.patients,
+  		  placeholder: "Select a patient"
+  		});
+  		$("#patient-select").on("change", function() {
+          $scope.sInfo.patient = $("#patient-select").val();
+      });
+     
+    if($routeParams.param != undefined){
+        console.log('PARAMS-------');
+        console.log($routeParams.param.patientID);
+        $scope.patient = $routeParams.param.patientID;
+        // vm.form.patient = $routeParams.param.patientID;
+        document.getElementById('patient-select').innerHTML = '<option>'+$routeParams.param.patientID+'</option>';
+        console.log(document.getElementById('patient-select').innerHTML);
+      }
   
-     
-     
   }
   
 })();

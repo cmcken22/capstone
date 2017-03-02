@@ -5,10 +5,10 @@
   angular.module('mainApp')
   .controller('patientsCtrl', patientsCtrl);
 
-  patientsCtrl.$inject = ['$location', 'dataService','authentication', '$scope'];
+  patientsCtrl.$inject = ['$location', 'dataService','authentication', '$scope', '$routeParams'];
   
   
-  function patientsCtrl($location, dataService, authentication, $scope) {
+  function patientsCtrl($location, dataService, authentication, $scope, $routeParams) {
     var vm = this;
     
     vm.patients;
@@ -62,6 +62,15 @@
       $location.path('/exercises').search({param: param});
     };
     
+    vm.manageExercises = function(patientID){
+      console.log('PatientID: ');
+      console.log(patientID);
+      var param = {
+        patientID: patientID
+      };
+      $location.path('/exercise-manager').search({param: param});
+    };
+    
     vm.messageSend = function(patientId){
       var messageData = {
         patientId : patientId,
@@ -69,7 +78,7 @@
         messageBody : vm.messageBody
       }
       
-      dataService.postMessage(messageData).success(function(data){
+      dataService.doctorPostMessage(messageData).success(function(data){
         vm.messageSubject = "";
         vm.messageBody = "";
         jQuery('#view .alert-div').html('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>Your message has successfully been sent.</div>');

@@ -7,16 +7,46 @@
   
   <div id="page-content-wrapper" class="container-fluid">
     
-  
-    <div class="row">
-      <div class="col-md-6">
-        <h1 class="form-signin-heading">Calendar</h1>
+    <div class="row" ng-hide="vm.everythingLoaded">
+      <!--<h1 class="form-signin-heading col-md-12">Calendar</h1>-->
+      <div class="progress progress-striped active" >
+        <div class="progress-bar" style="width: 90%"></div>
+      </div>
+    </div>
+    
+    <div class="row" >
+      <h1 class="form-signin-heading col-md-12">Calendar</h1>
+      <div class="col-md-9">
+        
     
         
       <!--<div ui-calendar="vm.uiConfig.calendar" ng-model="vm.eventSources" calendar="vm.myCalendar">-->
         <div id='calendar' class='calendar' ng-model="vm.eventSources"></div>
         <!--<div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>-->
         
+            </div>
+            <div class='col-md-3 hh-panel'>
+              <legend>Event Types</legend>
+              <div id='blueSwatch'class='col-md-12'>
+                <p>Completed Exercise</p>
+              </div> 
+              <div id='orangeSwatch'class='col-md-12'>
+                <p>Scheduled Exercise</p>
+              </div>
+              <div id='yellowSwatch'class='col-md-12'>
+                <p>Appointment</p>
+              </div>
+              <br>
+              <div>
+                <select class='form-control' id='select'>
+                  <option ng-selected = 'selected'>-Select patient-</option>
+                  <option value = "Appointment">My Appointments</option>
+                  <option ng-repeat= 'p in vm.patientList' value = "{{p._id}}">{{p.name}}</option>
+                </select>
+              </div>
+              
+            </div>
+              
           <!-- Modal -->
       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -29,8 +59,8 @@
               
               <div id='individualGraphArea' class="well">
                 <div ng-if="vm.zoom == true">
-                  <p class="h3x">exercise: {{vm.modal.gameObject.code}}</p>
-                  <p class="h3x">completion time: {{vm.modal.gameObject.time}}</p>
+                  <!--<p class="h3x">exercise: {{vm.modal.gameObject.code}}</p>-->
+                  <!--<p class="h3x">completion time: {{vm.modal.gameObject.time}}</p>-->
                   <button class="btn btn-primary btn-sml" ng-click="vm.prev()">prev</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.next()">next</button>
                 </div>
@@ -43,11 +73,13 @@
                 <div ng-if="vm.graphDisplayed == true">
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','modal')">line</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','modal')">bar</button>
-                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','modal')">pie</button>
                 </div>
               </div><!-- graphArea -->
-              
+              <div ng-controller='simCtrl'>
+                   <canvas  ng-init ='initCanvas()'ng-click="initFromModal(vm.gameObject)" id='simulation' width=1000 height="500" >
+                </div>
             </div>
+            
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
@@ -58,7 +90,7 @@
         
         
         
-      </div>
+      
     
     </div>
   </div>    

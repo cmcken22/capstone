@@ -2,6 +2,7 @@ var express = require ('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var event = mongoose.model('event');
+var User = mongoose.model('User');
 var moment = require('moment');
 module.exports.getEvent = function(req, res){
     console.log('/get-allevents');
@@ -51,6 +52,22 @@ module.exports.getEventByPatientId = function (req, res)
         }
         res.json(event);
     });
+//     if (req.payload.role != 'doctor') {
+//     res.status(401).json({
+//       "message" : "UnauthorizedError: wrong role"
+//     });
+//   } else {
+//     User.findOne({ _id: req.payload._id }, function(err, user){
+//       User.find({ _id: user.patients }, ['name','email','_id'] ,function(err, patientList){
+//         res.status(200).json(patientList);
+//         //patientList.each(function(onePatient){
+            
+//             //console.log(onePatient)
+//         //})
+//       })
+//     });
+//   }
+    
 }
 
 module.exports.postEvent = function(req, res)
@@ -61,7 +78,7 @@ module.exports.postEvent = function(req, res)
     var newPost = new event();
     
     newPost.patient = req.body.patient;
-    newPost.doctor = req.body.doctor;
+    newPost.doctor = req.payload._id;
     newPost.exercise = req.body.exercise; 
     newPost.type = req.body.type; 
     newPost.description = req.body.description;
@@ -69,27 +86,27 @@ module.exports.postEvent = function(req, res)
     newPost.endTime = req.body.endTime;
     newPost.eventLog= req.body.eventLog;
     newPost.completed = req.body.completed;
-    newPost.timeLimit = req.body.timeLimit;
-    newPost.alphaFilter = req.body.alphaFilter;
-    newPost.gripThreshold = req.body.gripThreshold;
-    newPost.axialThreshold = req.body.axialThreshold;
-   
-        newPost.save(
-            function(err)
-            {
-                if(err)
-                {
-                    res.send(err);
-                    return;
-                }
-            });
+    // newPost.timeLimit = req.body.timeLimit;
+    // newPost.alphaFilter = req.body.alphaFilter;
+    // newPost.gripThreshold = req.body.gripThreshold;
+    // newPost.axialThreshold = req.body.axialThreshold;
+   console.log(req.body);
+    newPost.save(function(err){
+        if(err){
+            res.send(err);
+            return;
+        }
+        //if(!req.body.repeat){
+        res.send({'message':'success'})
+        //}
+    });
     
    if(req.body.repeat){
         var day = moment(newPost.date);
         var eday = moment(newPost.endTime);
-            var end = moment(req.body.dateFinish);
+        var end = moment(req.body.dateFinish);
         do{
-             newPost = new event();
+            newPost = new event();
     
             newPost.patient = req.body.patient;
             newPost.doctor = req.body.doctor;
@@ -100,55 +117,25 @@ module.exports.postEvent = function(req, res)
             newPost.endTime = req.body.endTime;
             newPost.eventLog= req.body.eventLog;
             newPost.completed = req.body.completed;
-            newPost.timeLimit = req.body.timeLimit;
-            newPost.alphaFilter = req.body.alphaFilter;
-            newPost.gripThreshold = req.body.gripThreshold;
-            newPost.axialThreshold = req.body.axialThreshold;
-           day.add(req.body.skip, req.body.rOption);
-           eday.add(req.body.skip, req.body.rOption);
+            // newPost.timeLimit = req.body.timeLimit;
+            // newPost.alphaFilter = req.body.alphaFilter;
+            // newPost.gripThreshold = req.body.gripThreshold;
+            // newPost.axialThreshold = req.body.axialThreshold;
+            day.add(req.body.skip, req.body.rOption);
+            eday.add(req.body.skip, req.body.rOption);
            
-           newPost.date=day.toJSON();
-           newPost.endTime = eday.toJSON();
-           console.log(end);
-           
-             newPost.save(function(err){if(err){res.send(err);}});
-        }while(day.diff(end)<0)
-        
+            newPost.date=day.toJSON();
+            newPost.endTime = eday.toJSON();
+            newPost.save(function(err){
+                if(err){
+                    console.log(err)
+                }
+                else {
+                    console.log(newPost);
+                }
+            });
+        }while(day.diff(end) < 0)
     }
+   
 };
 
-module.exports.createData = function(req, res){
-    // console.log(req.route.path);
-    // var newPost = new event();
-    
-    // var patient = "58a2492c17180e1a95892b86"; //john smith
-    // var exercise = "58a293e70457a8252eead52e"; //get pumped - i think
-    // var doctor = "58a2491817180e1a95892b85";
-    
-    // newPost.patient = patient;
-    // newPost.doctor = doctor;
-    // newPost.exercise = exercise;
-    // //whether the event is an appointment or not?
-    // newPost.type = null;
-    // newPost.description = 'emtpy description'
-    // newPost.date = 
-    // //for the calendar
-    // newPost.endTime:
-    
-    // //date that the exercise was completed
-    // newPost.completed: 
-    // newPost.completedDate:
-    // //data for 1 game, will only be present should it be complete
-    // newPost.gameData:
-    
-    // newPost.save(
-    //     function(err)
-    //     {
-    //         if(err)
-    //         {
-    //             res.send(err);
-    //             return;
-    //         }
-    //     });
-    
-};

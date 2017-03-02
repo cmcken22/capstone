@@ -22,7 +22,7 @@
               </div>
               <div ng-if='e.exercise != null'>
                 <h5>Exercise: {{e.exercise.name}}</h3>
-                <p>def: {{e.exercise.description}}</p>
+                <p>Description: {{e.exercise.description}}</p>
                 <p>from {{getTime(e.date)}} to {{getTime(e.endTime)}}</p>
                 <p ng-if='e.description != null'><i>Note: {{e.description}} </i></p>
               </div>
@@ -57,7 +57,6 @@
               </div>    
             </div>
             <p ng-show="vm.unreadCount == 0">No unread messages.</p>
-          
           </div>
         </div>
       </div>
@@ -69,7 +68,10 @@
             <h4>{{g.exercise.name}}</h4> 
             <p>completed on {{g.date.getFullYear()}}/{{g.date.getMonth()}}/{{g.date.getDate()}}
             at {{g.date.getHours()}}:{{g.date.getMinutes()}}</p>
-          </div>      
+            <div>
+            <p ng-show='vm.pastExerciseCount == 0'>No past exercises.</p>
+            </div>
+          </div> 
         </div>
       </div>
       

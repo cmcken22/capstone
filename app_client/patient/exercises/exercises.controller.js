@@ -9,57 +9,118 @@
     .module('mainApp')
     .controller('exercisesCtrl', graphDataCtrl);
     
-    graphDataCtrl.$inject = ['dataService', '$scope', 'authentication'];
+    graphDataCtrl.$inject = ['dataService', '$scope', '$routeParams', 'authentication'];
     
-    function graphDataCtrl ($dataService, $scope, $authentication) {
-       var vm = this;
+    function graphDataCtrl ($dataService, $scope, $routeParams, $authentication) {
+        var vm = this;
         
         vm.allExercises = [];
         vm.allPatients = [];
-        
+        vm.originalObject = null;
         vm.graphDisplayed = false;
         vm.zoom = false;
+        vm.showSim = false;
         
-        vm.options = {
-            mainGraph: "",
-            modalGraph: ""
+        vm.currentPatient = $authentication.currentUser();
+        
+        vm.mainGraph = {
+            labels: {
+                yAxes: 'Average Pressure Values',
+                xAxes: 'Game Objects',
+            }
         }
-        
-        vm.options.modalGraph = {
+        vm.mainGraph.options = {
             scales: {
-                yAxes: [{ scaleLabel: { display: true, labelString: 'Pressure Values' }}],
-                xAxes: [{ scaleLabel: { display: true, labelString: 'Time (Seconds)' }}],
+                yAxes: [{ scaleLabel: { display: true, labelString: vm.mainGraph.labels.yAxes }}],
+                xAxes: [{ scaleLabel: { display: true, labelString: vm.mainGraph.labels.xAxes }}],
              }
         }
         
-        vm.options.mainGraph = {
+        vm.modalGraph = {
+            labels: {
+                yAxes: 'Pressure Values',
+                xAxes: 'Time (Seconds)',
+            }
+        }
+        vm.modalGraph.options = {
             scales: {
-                yAxes: [{ scaleLabel: { display: true, labelString: 'Average Pressure Values' }}],
-                xAxes: [{ scaleLabel: { display: true, labelString: 'gameData Objects' }}],
+                yAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.yAxes }}],
+                xAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.xAxes }, ticks: { autoSkip: false } }],
              }
         }
+        
+        vm.refreshOptions = function(){
+            vm.mainGraph.options = {
+                scales: {
+                    yAxes: [{ scaleLabel: { display: true, labelString: vm.mainGraph.labels.yAxes }}],
+                    xAxes: [{ scaleLabel: { display: true, labelString: vm.mainGraph.labels.xAxes }}],
+                 }
+            }
+            vm.modalGraph.options = {
+                scales: {
+                    yAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.yAxes }}],
+                    xAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.xAxes }, ticks: { autoSkip: false } }],
+                 }
+            }
+        }
+        
+        vm.currentDate = {
+            date: '',
+            day: '',
+            month: '',
+            year: '',
+            string: ''
+        }
+        
+        vm.nextDate = {
+            date: '',
+            day: '',
+            month: '',
+            year: '',
+            string: '',  
+        }
+        
+        vm.setFormDate = function(){
+            vm.currentDate.date = new Date();
+            vm.currentDate.date.setHours(0,0,0,0);
+            console.log('CURRENT DATE: ' + vm.currentDate.date);
+            vm.currentDate.day      = vm.currentDate.date.getUTCDate();
+            vm.currentDate.month    = vm.currentDate.date.getUTCMonth()+1;
+            vm.currentDate.year     = vm.currentDate.date.getFullYear();
+            vm.currentDate.string   = vm.currentDate.month + '-' + vm.currentDate.day + '-' + vm.currentDate.year;  
+            console.log('CURRENT DATE STRING: ' + vm.currentDate.string);
+            
+            vm.nextDate.date = new Date();
+            vm.nextDate.date.setHours(0,0,0,0);
+            vm.nextDate.date.setDate(vm.nextDate.date.getDate() + 7);
+            console.log('NEXT DATE: ' + vm.nextDate.date);
+            vm.nextDate.day = vm.nextDate.date.getUTCDate();
+            vm.nextDate.month = vm.nextDate.date.getUTCMonth()+1;
+            vm.nextDate.year = vm.nextDate.date.getFullYear();
+            vm.nextDate.string = vm.nextDate.month + '-' + vm.nextDate.day + '-' + vm.nextDate.year;
+            console.log('NEXT DATE STRING: ' + vm.nextDate.string);
+        };
+        vm.setFormDate();
         
         vm.form = {
             date : "",
-            month : "02/2017",
-            exercise : "ALL",
-            patient: $authentication.currentUser()._id,
-            startDate : "02-05-2017",
-            endDate : "02-07-2017",
+            month : vm.currentDate.month + "/" + vm.currentDate.year,
+            exercise : null,
+            patient: null,
+            startDate : vm.currentDate.string,  //todays date
+            endDate : vm.nextDate.string,       //a week from today
         }
         
-        vm.dummyData = {
-            date : "02-05-2017",
-            time : 7,
-            exercise : "100",
+        if($routeParams.param != undefined){
+            console.log('PARAMS-------');
+            console.log($routeParams.param.patientID);
+            vm.form.patient = $routeParams.param.patientID;
+            document.getElementById('patient-select').innerHTML = '<option>'+$routeParams.param.patientID+'</option>';
         }
         
         vm.modal = {
             title: "",
             details: "",
-            gameObject: "",
-            exercise: "",
-            duration: "",
         }
         
         vm.graphData = {
@@ -67,9 +128,9 @@
             datasets: [],
             labels: [],
             type: 'line',
-            datasetIndex: 0,
+            pressureType: 0,
             index: 0,
-        };
+        }
         
         var color = Chart.helpers.color;
         vm.colors = [];
@@ -97,6 +158,27 @@
         $('#graphArea').hide();
         
         vm.initInputFields = function(){
+            vm.patientNames = [];
+            $dataService.getPatients().success(function(data){
+                vm.patientNames = data.map(function(a) {
+                  return { id:a._id, text:a.name }
+                });
+                $("#patient-select").select2({
+        		  data: vm.patientNames,
+        		  placeholder: "Select a patient"
+        		});
+        		$("#patient-select-range").select2({
+        		  data: vm.patientNames,
+        		  placeholder: "Select a patient"
+        		});
+            });
+            $("#patient-select").on("change", function() {
+                vm.form.patient = $("#patient-select").val();
+            });
+            $("#patient-select-range").on("change", function() {
+                vm.form.patient = $("#patient-select-range").val();
+            });
+            
             vm.exerciseNames = [];
             $dataService.getExercise().success(function(data){
                 vm.allExercises = data;
@@ -116,7 +198,7 @@
                 vm.form.exercise = $("#exercise-select").val();
             });
             $("#exercise-select-range").on("change", function() {
-                vm.form.exercise = $("#exercise-select").val();
+                vm.form.exercise = $("#exercise-select-range").val();
             });
         };
         
@@ -131,15 +213,9 @@
                 vm.form.month = $("#_monthPicker").val();
             });
             $('#monthPicker').datepicker("update", vm.form.month);
-           
-            $('#dummyDatePicker').datepicker({
-                format: "mm-dd-yyyy",
-                orientation: 'bottom',
-                autoclose: true,
-            }).on("changeDate", function() {
-                vm.dummyData.date = $("#dummyDatePickerVal").val();
-            });
-            $("#dummyDatePicker").datepicker("update", vm.dummyData.date);
+            
+            $("#_startDate").datepicker("update", vm.form.startDate);
+            $("#_endDate").datepicker("update", vm.form.endDate);
             
             $('.input-daterange').datepicker({
                 format: "mm-dd-yyyy",
@@ -149,42 +225,36 @@
                 vm.form.startDate = $("#_startDate").val();
                 vm.form.endDate = $("#_endDate").val();
             });
-            $("#_startDate").datepicker("update", vm.form.startDate);
-            $("#_endDate").datepicker("update", vm.form.endDate);
+            
         };
         
         vm.initInputFields();
         vm.initDatePickers();
         
-        vm.generateGameData = function(){
-            console.log('generating random data');
-            // $dataService.generateGameData();
-        };
-        
 //----------------------------------------------------------------------------------------------
         
         vm.viewALLByRange = function(){
-            vm.clearObjects();
-            var exercises = [];
-            for(var i=0; i<vm.allExercises.length; i++){
-                if(vm.allExercises[i].name != 'ALL')
-                    exercises[i] = vm.allExercises[i];
+            if(vm.form.exercise == null){
+                alert('Please select an exercise');
+                return 0;
             }
-            var limit = exercises.length;
+            console.log('Form: ');
+            console.log(vm.form);
+            vm.clearObjects();
             var startDate = new Date(vm.form.startDate);
             var endDate = new Date(vm.form.endDate);
             vm.modal.title = startDate.toDateString() + " - " + endDate.toDateString();
             $('#graphArea').slideDown();
-            vm.createQuery(startDate, endDate, exercises);
+            vm.createQuery(startDate, endDate);
         };
         
         vm.viewALLByMonth = function(){
-            vm.clearObjects();
-            var exercises = [];
-            for(var i=0; i<vm.allExercises.length; i++){
-                if(vm.allExercises[i].name != 'ALL')
-                    exercises[i] = vm.allExercises[i];
+            if(vm.form.exercise == null){
+                alert('Please select an exercise');
+                return 0;
             }
+            vm.clearObjects();
+            console.log(vm.form.exercise);
             var res = vm.form.month.split("/");
             var startDate = res[0] + "-01-" + res[1]; 
             startDate = new Date(startDate);
@@ -192,43 +262,74 @@
             endDate = new Date(endDate);
             endDate.setDate(endDate.getDate() - 1);
             vm.modal.title = vm.setMonthString(startDate.getUTCMonth()+1);
-            $('#graphArea').slideDown();
-            vm.createQuery(startDate, endDate, exercises);
+            vm.createQuery(startDate, endDate);
         };
         
-        vm.createQuery = function(startDate, endDate, exercises){
-            var limit = exercises.length;
-            if(vm.form.exercise != undefined && vm.form.exercise != 'ALL'){
-                $dataService.queryDateRange(startDate, endDate, vm.form.patient, vm.form.exercise).success(function(data){
-                    if(data.length != 0){
-                        data = vm.sortByDate(data);
-                        vm.graphData.storedObjects[0] = data;
-                        vm.graphData.datasets[0] = vm.graphAVG(data, 0, vm.form.exercise.name);
-                    }
-                    vm.updateMainGraph();
-                });
-            }
-            else if(vm.form.exercise == undefined || vm.form.exercise == 'ALL'){
-                vm.searchDatabase(startDate, endDate, vm.form.patient, exercises, 0, limit);
-            }
-        };
-        
-        vm.searchDatabase = function(startDate, endDate, patient, exercises, index, limit){
-            var exId = exercises[index]._id;
-            $dataService.queryDateRange(startDate, endDate, patient, exId).success(function(data){
-                data = vm.sortByDate(data);
+        vm.createQuery = function(startDate, endDate){
+            $dataService.queryDateRange(startDate, endDate, vm.currentPatient._id, vm.form.exercise).success(function(data){
+                console.clear();
+                console.log(data.length);
+                console.log(data);
                 if(data.length != 0){
-                    vm.graphData.storedObjects[index] = data;
-                    vm.graphData.datasets[index] = vm.graphAVG(data, index, exercises[index].name);
-                }
-                index++;
-                if(index != limit){
-                    vm.searchDatabase(startDate, endDate, patient, exercises, index, limit);
-                }
-                else if(index == limit){
+                    $('#graphArea').slideDown();
+                    data = vm.sortByDate(data);
+                    vm.graphData.datasets = vm.graphALLavg(data, vm.form.exercise.name);
                     vm.updateMainGraph();
+                }else if(data.length == 0){
+                    alert("Error: no data found.");
                 }
             });
+        };
+        
+        vm.graphALLavg = function(data, exerciseName){
+            console.log('GRAPHING ALL AVG');
+            var graphAxial = []; var graphA = []; var graphB = []; var graphC = [];
+            var labels = [];
+            
+            for(var i=0; i<data.length; i++){
+                var avgAxial = 0; var avgA = 0; var avgB = 0; var avgC = 0;
+                labels[i] = i;
+                vm.graphData.storedObjects[i] = data[i];
+                for(var j=0; j<data[i].pressureAxial.length; j++){
+                    avgAxial += data[i].pressureAxial[j];
+                    avgA += data[i].pressureA[j];
+                    avgB += data[i].pressureB[j];
+                    avgC += data[i].pressureC[j];
+                }
+                graphAxial[i] = avgAxial/data[i].pressureAxial.length;
+                graphA[i] = avgA/data[i].pressureA.length;
+                graphB[i] = avgB/data[i].pressureB.length;
+                graphC[i] = avgC/data[i].pressureC.length;
+            }
+            vm.graphData.labels = labels;
+            
+            var colorIndex = 0;
+            var datasets = [{
+                label: 'Axial',
+                backgroundColor: vm.colors[colorIndex%vm.colors.length].light,
+                borderColor: vm.colors[(colorIndex++)%vm.colors.length].dark,
+                borderWidth: 1,
+                data: graphAxial,
+            },{
+                label: 'A',
+                backgroundColor: vm.colors[colorIndex%vm.colors.length].light,
+                borderColor: vm.colors[(colorIndex++)%vm.colors.length].dark,
+                borderWidth: 1,
+                data: graphA,
+            },{
+                label: 'B',
+                backgroundColor: vm.colors[colorIndex%vm.colors.length].light,
+                borderColor: vm.colors[(colorIndex++)%vm.colors.length].dark,
+                borderWidth: 1,
+                data: graphB,
+            },{
+                label: 'C',
+                backgroundColor: vm.colors[colorIndex%vm.colors.length].light,
+                borderColor: vm.colors[(colorIndex++)%vm.colors.length].dark,
+                borderWidth: 1,
+                data: graphC,
+            }];
+            return datasets;
         };
         
 //----------------------------------------------------------------------------------------------
@@ -241,47 +342,77 @@
             vm.index = 0;
         };
         
-        vm.graphAVG = function(data, index, exerciseName){
-            var graphData = [];
-            var labels = [];
-            
-            for(var i=0; i<data.length; i++){
-                labels[i] = i;
-                var avg = 0;
-                for(var j=0; j<data[i].pressure.length; j++){
-                    avg += data[i].pressure[j];
-                }
-                graphData[i] = avg/data[i].pressure.length;
-                
+        vm.clearForm = function(){
+            vm.form = {
+                date : "",
+                month : vm.currentDate.month + "/" + vm.currentDate.year,
+                exercise : null,
+                patient: null,
+                startDate : vm.currentDate.string,  //todays date
+                endDate : vm.nextDate.string,       //a week from today
             }
-            
-            var dataset = {
-                label: exerciseName,
-                backgroundColor: vm.colors[index%vm.colors.length].light,
-                borderColor: vm.colors[index%vm.colors.length].dark,
-                borderWidth: 1,
-                data: graphData,
-            }
-            
-            vm.graphData.labels[index] = labels;
-            return dataset;
+            $("#exercise-select").select2('val', null);
+    		$("#exercise-select-range").select2('val', null);
+    		$("#patient-select").select2('val', null);
+    		$("#patient-select-range").select2('val', null);
         };
         
-        vm.graphPressure = function(data, index, exerciseName){
+        vm.clearGraph = function(){
+            console.clear();
+            console.log('CLEARING GRAPH');
+            vm.clearObjects();
+            vm.clearForm();
+            var oldCanvas = vm.resetCanvas();
+            oldCanvas.remove();
+            $('#graphArea').hide();
+        };
+        
+        vm.graphPressure = function(data, pressureType, exerciseName){
             console.log('Graphing Pressure:');
             console.log(exerciseName);
             var graphData = [];
             var labels = [];
-            for(var i=0; i<data.pressure.length; i++){
-                console.log(data.pressure[i]);
-                labels[i] = i;
-                graphData[i] = data.pressure[i];
+            var ts = 0;
+            
+            var _data = '';
+            switch(pressureType) {
+                case 0:
+                    vm.modalGraph.labels.yAxes = 'Pressure (Axial)';
+                    vm.refreshOptions();
+                    _data = data.pressureAxial;
+                    break;
+                case 1:
+                    vm.modalGraph.labels.yAxes = 'Pressure (A)';
+                    vm.refreshOptions();
+                    _data = data.pressureA;
+                    break;
+                case 2:
+                    vm.modalGraph.labels.yAxes = 'Pressure (B)';
+                    vm.refreshOptions();
+                    _data = data.pressureB;
+                    break;
+                case 3:
+                    vm.modalGraph.labels.yAxes = 'Pressure (C)';
+                    vm.refreshOptions();
+                    _data = data.pressureC;
+                    break;
+            }
+            
+            for(var i=0; i<_data.length; i++){
+                if(i%50 == 0){
+                    labels[i] = ts;
+                    ts++;
+                }
+                else{
+                    labels[i] = '';
+                }
+                graphData[i] = _data[i];
             }
             
             var dataset = {
                 label: exerciseName,
-                backgroundColor: vm.colors[index%vm.colors.length].light,
-                borderColor: vm.colors[index%vm.colors.length].dark,
+                backgroundColor: vm.colors[pressureType%vm.colors.length].light,
+                borderColor: vm.colors[pressureType%vm.colors.length].dark,
                 borderWidth: 1,
                 data: graphData,
             }
@@ -291,8 +422,7 @@
         };
         
         vm.updateMainGraph = function(){
-            console.log('---------Updating Chart Data---------');
-            var color = Chart.helpers.color;
+            console.log('-------------------\n Updating Chart Data \n-------------------');
             vm.graphDisplayed = true;
             var oldCanvas = vm.resetCanvas();
             console.log('vm.graphData.datasets');
@@ -309,11 +439,11 @@
             var config = {
                 type: vm.graphData.type,
                 data: {
-                    labels: labels,
+                    labels: vm.graphData.labels,
                     datasets: vm.graphData.datasets,
                 },
-                options : vm.options.mainGraph
-            };
+                options : vm.mainGraph.options
+            }
             
             var graph = new Chart(document.getElementById('my-graph').getContext('2d'), config);
             oldCanvas.remove();
@@ -325,17 +455,23 @@
                 var point = activePoints[0];
                 if (point !== undefined){
                     vm.zoom = true;
-                    vm.graphData.datasetIndex = point._datasetIndex;
+                    vm.graphData.pressureType = point._datasetIndex;
                     vm.graphData.index = point._index;
-                    var originalDataObject = vm.graphData.storedObjects[point._datasetIndex][point._index];
+                    console.log('pointIndex: ' + vm.graphData.index);
+                    
+                    var originalDataObject = vm.graphData.storedObjects[vm.graphData.index];
+                    console.log('DATA OBJECT: ');
+                    console.log(originalDataObject);
                     
                     var date = new Date(originalDataObject.date);
-                    date.setMinutes(date.getTimezoneOffset());
+                    date.setHours(0,0,0,0);
+                    console.log(date);
                     vm.modal.details = date.toDateString();
                     vm.modal.gameObject = originalDataObject;
+                    vm.originalObject = originalDataObject;
                     
                     $('#myModal').modal('show');
-                    vm.displayObject(originalDataObject, vm.graphData.datasetIndex);
+                    vm.displayObject(originalDataObject);
                     $scope.$apply();
                 }
             }
@@ -343,21 +479,23 @@
         };
         
         vm.resetCanvas = function(){
-          var iframe = $('.chartjs-hidden-iframe');
-          iframe.remove();
-          var oldCanvas = $('#my-graph');
-          oldCanvas.removeAttr('id');
-          $('#graph').append('<canvas id="my-graph">');
-          return oldCanvas;
+            var iframe = $('.chartjs-hidden-iframe');
+            iframe.remove();
+            var oldCanvas = $('#my-graph');
+            oldCanvas.removeAttr('id');
+            $('#graph').append('<canvas id="my-graph">');
+            return oldCanvas;
         };
         
         vm.updateModalGraph = function(){
-            console.log('Updating Chart Data');
-            var color = Chart.helpers.color;
+            console.clear();
+            console.log('Updating Modal Graph');
             vm.graphDisplayed = true;
             var oldCanvas = vm.resetModalCanvas();
             console.log('vm.graphData.datasets');
             console.log(vm.graphData.datasets);
+            
+            console.log(vm.modalGraph);
             
             var config = {
                 type: vm.graphData.type,
@@ -365,10 +503,10 @@
                     labels: vm.graphData.labels,
                     datasets: vm.graphData.datasets,
                 },
-                options : vm.options.modalGraph
-            };
+                options : vm.modalGraph.options,
+            }
             
-            var graph = new Chart(document.getElementById('my-modalGraph').getContext('2d'), config);
+            new Chart(document.getElementById('my-modalGraph').getContext('2d'), config);
             oldCanvas.remove();
             
         };
@@ -382,14 +520,13 @@
           return oldCanvas;
         };
         
-        vm.displayObject = function(data, index){
+        vm.displayObject = function(data){
             console.log('Displaying Object:');
-            console.log(index);
             console.log(data);
             console.log(data.exercise);
             $dataService.getSingleExercise(data.exercise).success(function(exercise){
                 vm.graphData.datasets = [];
-                vm.graphData.datasets[0] = vm.graphPressure(data, index, exercise[0].name);
+                vm.graphData.datasets[0] = vm.graphPressure(data, vm.graphData.pressureType, exercise[0].name);
                 vm.modal.exercise = exercise[0].name;
                 vm.updateModalGraph();
             });
@@ -400,16 +537,15 @@
             try{
                 vm.graphData.index++;
                 console.log(vm.graphData.index);
-                var datasetIndex = vm.graphData.datasetIndex;
-                console.log(datasetIndex);
-                var nextDataObject = vm.graphData.storedObjects[vm.graphData.datasetIndex][vm.graphData.index];
+                var nextDataObject = vm.graphData.storedObjects[vm.graphData.index];
+                vm.originalObject = nextDataObject;
                 console.log(nextDataObject);
                 var date = new Date(nextDataObject.date);
-                date.setMinutes(date.getTimezoneOffset());
+                date.setMinutes(0,0,0,0);
                 console.log(date);
                 vm.modal.details = date.toDateString();
                 vm.modal.gameObject = nextDataObject;
-                vm.displayObject(nextDataObject, datasetIndex);
+                vm.displayObject(nextDataObject);
             }
             catch(err){
                 console.log('error: ' + err);
@@ -422,27 +558,21 @@
             try{
                 vm.graphData.index--;
                 console.log(vm.graphData.index);
-                var datasetIndex = vm.graphData.datasetIndex;
-                console.log(datasetIndex);
-                var prevDataObject = vm.graphData.storedObjects[vm.graphData.datasetIndex][vm.graphData.index];
-                console.log(prevDataObject);
-                var date = new Date(prevDataObject.date);
-                date.setMinutes(date.getTimezoneOffset());
+                var nextDataObject = vm.graphData.storedObjects[vm.graphData.index];
+                vm.originalObject = nextDataObject;
+                console.log(nextDataObject);
+                var date = new Date(nextDataObject.date);
+                date.setHours(0,0,0,0);
                 console.log(date);
                 vm.modal.details = date.toDateString();
-                vm.modal.gameObject = prevDataObject;
-                vm.displayObject(prevDataObject, datasetIndex);
+                vm.modal.gameObject = nextDataObject;
+                vm.displayObject(nextDataObject);
             }
             catch(err){
                 console.log('error: ' + err);
                 vm.graphData.index++; //undo
             }
         };
-        
-        // vm.setModal = function(title, details){
-        //     vm.modal.title = title;
-        //     vm.modal.details = details;
-        // };
         
         vm.setMonthString = function(currentMonth){
             var month;
@@ -496,7 +626,7 @@
            } 
            return ar;
         };
-        
+    
     };
     
 })();
@@ -509,4 +639,4 @@ function setDate(date){
     var d = new Date(Date.UTC(year, month, day, 0, 0, 0));
     var n =  d.toISOString();
     return n;
-}
+};

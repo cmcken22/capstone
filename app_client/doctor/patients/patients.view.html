@@ -6,7 +6,7 @@
   <sidebar></sidebar>
   
   <div id="page-content-wrapper" class="container-fluid">
-    <div class="row">
+    <div class="row nomargin">
       <div class="col-md-12">
         <h1 class="form-signin-heading">Patients</h1>
         <div class="hh-panel">
@@ -29,12 +29,13 @@
                 <div id="{{onePatient._id}}" class='single-patient hh-panel'>
                   <h4><a ng-click='vm.togglePatient(onePatient._id)'>{{ onePatient.name }}</a></h4>
                   <div class="toggle-section">
-                    <form class="form-horizontal well" ng-submit="vm.viewData(onePatient._id)">
+                    <div class="form-horizontal well">
                       <legend>General Info:</legend>
                       <p>name: {{onePatient.name}}</p>
                       <p>email: {{onePatient.email}}</p>
-                      <button type="submit" class="btn btn-primary">View Patient Exercise Data</button>
-                    </form>
+                      <button type="submit" class="btn btn-primary" ng-click="vm.viewData(onePatient._id)">View Patient Exercise Data</button>
+                      <!--<button type="submit" class="btn btn-primary" ng-click="vm.manageExercises(onePatient._id)">Manage Patient Exercises</button>-->
+                    </div>
                     <form class="form-horizontal well" ng-submit="vm.messageSend(onePatient._id)">
                       <legend>Send Message:</legend>
                       <fieldset>

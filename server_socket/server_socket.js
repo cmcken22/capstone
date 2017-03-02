@@ -80,7 +80,7 @@ module.exports.onConnection = function(socket){
 	        	    	event.gameData = newPost._id;
 	        	    	
 	        	    	//!!!Remember to change this 
-	        	    	event.completed = false;
+	        	    	event.completed = true;
 	        	    	
 	        	    	event.save(function(err) 
 	        	    	{
@@ -181,19 +181,22 @@ module.exports.onConnection = function(socket){
 	            	console.log('Retrieving incomplete exercises for ' + user.name);
 	            	events.forEach(function(singleE){
     					//console.log('Thing retrieved:' + singleE);
-    					
-    					var exerciseData = {
+    					if(singleE.exercise)
+    					{
+    						var exerciseData = {
     						"_id" : singleE._id,
     						"name" : singleE.exercise.name,
     						"description" : singleE.exercise.description,
     						"date" : singleE.date,
     						"endTime" : singleE.endTime,
     						"type" : singleE.type,
-    						"doctor" : singleE.doctor.name
-    					};
-    					
+    						"eventDescription" : singleE.description,
+    						};
+    						socket.emit("exercise-data",exerciseData);
     					//console.log('The hell: ' + exerciseData);
-    					socket.emit("exercise-data",exerciseData);
+    				
+    					}
+    					
 					});
 	            	//socket.emit("exercises-available",events);
 	            });

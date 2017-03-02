@@ -6,12 +6,151 @@
   
   <div id="page-content-wrapper">
     <div class="container-fluid">
-      <h1>Dashboard Dashboard</h1>
+      <h1>Dashboard</h1>
       
-      <p>There's gonna be some super cool shit here one day...</p>
+      <div class='row nomargin hh-panel' id='dash-messaging'>
+        <div class='hh-content-pane'>
+          <legend>Patient Search</legend>
+          <div class="form-group">
+            <input class="form-control" id="focusedInput" type="text" ng-model='vm.myfilter' placeholder="search name...">
+          </div>
+          <div ng-repeat="onePatient in vm.patients | orderBy:'name' | filter:vm.myfilter" ng-show='vm.myfilter.length > 0'>
+            
+            <div id="{{onePatient._id}}" class='single-patient hh-panel'>
+              <h4><a ng-click='vm.togglePatient(onePatient._id)'>{{ onePatient.name }}</a></h4>
+              <div class="toggle-section">
+                <div class="form-horizontal well">
+                  <legend>General Info:</legend>
+                  <p>name: {{onePatient.name}}</p>
+                  <p>email: {{onePatient.email}}</p>
+                  <button type="submit" class="btn btn-primary" ng-click="vm.viewData(onePatient._id)">View Patient Exercise Data</button>
+                </div>
+                <form class="form-horizontal well" ng-submit="vm.messageSend(onePatient._id)">
+                  <legend>Send Message:</legend>
+                  <fieldset>
+                    <div class="form-group">
+                      <label for="subject" class="col-lg-2 control-label">Subject</label>
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control" id="subject" placeholder="Subject" ng-model="vm.messageSubject">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="textArea" class="col-lg-2 control-label">Message</label>
+                      <div class="col-lg-10">
+                        <textarea class="form-control" rows="3" id="textArea" placeholder="Type a message ..." ng-model="vm.messageBody"></textarea>
+                      </div>
+                    </div>
+                    
+                    <div class="alert-div">
+                    </div>
+                    
+                    <div class="form-group">
+                      <div class="col-lg-10 col-lg-offset-2">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </div>
+                    </div>
+                  </fieldset>
+                </form>
+                
+
+              </div>
+            </div>
+            
+            
+            
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class='row nomargin hh-panel' id='dash-messaging'>
+        <div class='hh-content-pane'>
+          <legend>Unread Messages</legend>
+        
+          <div ng-repeat="m in vm.messages | orderBy:'date':true" ng-show='(m.read == false) && (m.receiver == vm.currentUser._id)'>
+            <div id='unread-{{m._id}}' class="panel panel-default" data-toggle="collapse" data-target="#{{m._id}}-col1" aria-expanded="false">
+              <div class="panel-heading message-unread">  
+                <p><strong>From: {{vm.getSenderName(m.sender)}}</strong></p>
+                <p>Subject: {{m.messageSubject}}</p>
+                <span class="label label-default">{{vm.dateString(m.date)}}</span>
+              </div>
+              <div id ="{{m._id}}-col1" class="collapse panel-body">
+                <p>{{m.messageBody}}</p>
+                
+                
+                <div class="btn-group">
+                  <a class="btn btn-default" data-toggle="modal" data-target="#reply-modal" ng-click="vm.replyClick(m)">Reply</a>
+                </div>
+              </div>
+            
+            </div>    
+          </div>
+          <p ng-show="vm.unreadCount == 0">No unread messages.</p>
+        </div>
+      </div>
       
       
       
+
+    </div>
+  </div>
+  
+  <div id='reply-modal' class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Subject: {{vm.activeReply.messageSubject}}</h4>
+        </div>
+        
+        <div class="modal-body">
+          
+          <div class="panel panel-default">
+            <div class="panel-heading">  
+              <p><strong>From: {{vm.getSenderName(vm.activeReply.sender)}}</strong></p>
+              <p>Subject: {{vm.activeReply.messageSubject}}</p>
+              <span class="label label-default">{{vm.dateString(vm.activeReply.date)}}</span>
+            </div>
+            <div class="panel-body">
+              <p>{{vm.activeReply.messageBody}}</p>
+            </div>
+          </div>
+          <div class='row'>
+            <div ng-repeat="oneReply in vm.activeReply.replysData | orderBy:'date':false" class='col-lg-11 col-lg-offset-1'>
+              <div class="panel panel-default cancel-hover">
+                <div class="panel-heading">  
+                  <p><strong>From: {{vm.getSenderName(oneReply.sender)}}</strong></p>
+                  <span class="label label-default">{{vm.dateString(oneReply.date)}}</span>
+                </div>
+                <div class="panel-body">
+                  <p>{{oneReply.body}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="modal-footer">
+          
+          <form class="form-horizontal" ng-submit="vm.postReply()">
+            <fieldset>
+              <div class="form-group">
+                <label for="textArea" class="col-lg-2 control-label">Reply</label>
+                <div class="col-lg-10">
+                  <textarea class="form-control" rows="3" id="textArea" placeholder="Type a reply ..." ng-model="vm.replyBody" required></textarea>
+                </div>
+              </div>
+              <div class="alert-div">
+              </div>
+              <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                  <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
   

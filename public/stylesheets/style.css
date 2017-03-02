@@ -3,6 +3,21 @@
 lightblue: #54b4eb
 blue: #2FA4E7
 */
+#blueSwatch{
+    background-color:#1993DC;
+    color:#FFFFFF;
+    margin:3px;
+}
+#orangeSwatch{
+    background-color:#FF6c3e;
+    color:#FFFFFF;
+     margin:3px;
+}
+#yellowSwatch{
+    background-color:#FFBF10;
+    color:#FFFFFF;
+      margin:3px;
+}
 .nopadding{
     padding:0px !important;
 }
@@ -103,7 +118,10 @@ navigation .navbar-default{
 .toggle-section.toggled{
     display:block;
 }
-
+.row.nomargin{
+    margin-left:0px;
+    margin-right:0px;
+}
 .panel-default>.panel-heading{
     background-color:#f8f8f8;
     cursor:pointer;
@@ -240,7 +258,9 @@ li.active #sidebar-messages{
     font-size: 18px;
     line-height: 60px;
 }
-
+.form-group .col-lg-12{
+    float:none;
+}
 .sidebar-nav .sidebar-brand a {
     color: #999999;
 }
@@ -388,5 +408,9 @@ li.active #sidebar-messages{
     .login-panel{
         width:85%;
         padding:30px 30px !important;
+    }
+    .navbar-brand{
+        padding:15px 5px;
+        font-size:18px;
     }
 }

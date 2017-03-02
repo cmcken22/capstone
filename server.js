@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var socketIO = require('socket.io');
-var nodemailer = require('nodemailer');
+//var nodemailer = require('nodemailer');
 
 var app = express();
 var server = http.Server(app);

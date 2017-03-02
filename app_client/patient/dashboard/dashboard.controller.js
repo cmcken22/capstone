@@ -11,7 +11,9 @@
     homeCtrl.$inject = ['$scope','authentication','dataService'];
     
     function homeCtrl ($scope, authentication, dataService) {
-        
+        var vm = this;
+        vm.pastExerciseCount = 0;  
+        vm.unreadCount = 0;
         
         $scope.myEvents=[];
         $scope.today =new Date();
@@ -78,9 +80,10 @@
         
         $scope.getGameData = function(){
           dataService.getGameDataForPatient(authentication.currentUser()._id).then(function(data){
-            
+          vm.pastExerciseCount = 0
           data.data.sort(comp);
           for(var i=0; i<10; i++){
+            vm.pastExerciseCount++;
             $scope.myGameData[i]=data.data[i];
             $scope.myGameData[i].date=new Date(data.data[i].date)
           }
@@ -116,8 +119,7 @@
         //Robs stuff
         
         
-        var vm = this;
-        vm.unreadCount = 0;
+       
         vm.dateString = function(date){
           var date = new Date(date);
           return date.toDateString() +', '+ date.toLocaleTimeString()

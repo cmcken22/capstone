@@ -32,10 +32,11 @@
         controllerAs: 'vm',
         reloadOnSearch: false
       })
-      .when('/patient-exercises', {
+      .when('/exercise-manager', {
         templateUrl: 'doctor/event/event.view.html',
         controller: 'eventCtrl',
         controllerAs: 'vm',
+        reloadOnSearch: false
       })
       .when('/manager', {
         templateUrl: 'doctor/manager/manager.view.html',

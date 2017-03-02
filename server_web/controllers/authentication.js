@@ -1,6 +1,6 @@
 var passport = require('passport');
 var mongoose = require('mongoose');
-var nodemailer = require('nodemailer');
+//var nodemailer = require('nodemailer');
 var User = mongoose.model('User');
 var LocalStrategy = require('passport-local').Strategy;
 

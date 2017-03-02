@@ -67,7 +67,7 @@
         var i=0;
        
         go= $interval(function(){
-          console.log(gameD.pressureAxial[i])
+          //console.log(gameD.pressureAxial[i])
           var h=120 -gameD.pressureAxial[i]/8.3;
            ctx.fillStyle='#7cc9f4'
            ctx.beginPath();
@@ -80,29 +80,50 @@
           // ctx.fillStyle = '#FFFFFF'
           // ctx.fillRect(805,55,140,390);
            //ctx.fillRect(10*i,$scope.GD[0].pressure[i],3,3);
-            ctx.beginPath();
-            ctx.arc((gameD.canvasX[i]/3.41 )+50,400-(gameD.canvasY[i]/2.92)+50,3, 0, 2 * Math.PI, false);
+        //   if(gameD.canvasY[i] != 0 && gameD.canvasX[i]!=0)
+        //   {
+            //ctx.beginPath();
+            
+            //ctx.arc((gameD.canvasX[i]/3.41 )+50,400-(gameD.canvasY[i]/2.92)+50,3, 0, 2 * Math.PI, false);
             ctx.fillStyle ='hsl('+h+',75%,50%)';
+            ctx.strokeStyle='hsl('+h+',75%,50%)';
             //console.log(ctx.fillStyle)
-            ctx.fill();
-            ctx.lineWidth = 1;
+            //ctx.fill();
+            ctx.lineWidth = 3;
             
-            ctx.closePath();
+            //ctx.closePath();
+            if(i>0){
+                 var diffX=Math.abs(gameD.canvasX[i]-gameD.canvasX[i+1]);
+                var diffY=Math.abs(gameD.canvasY[i]-gameD.canvasY[i+1]);
+                console.log(diffX +"vs"+diffY)
+                ctx.lineWidth=3;
+            if((diffX < 100 && diffX >1) || (diffY<100 && diffY>1)){
+                    ctx.beginPath();
+                    ctx.moveTo((gameD.canvasX[i]/3.41)+50,400-(gameD.canvasY[i]/2.92)+50);
+                    ctx.lineTo((gameD.canvasX[i+1]/3.41)+50,400-(gameD.canvasY[i+1]/2.92)+50);
+                    
+                    ctx.stroke();
+                }
+                
+            }
+           // }
+           
             
+           
             ctx.beginPath();
-            ctx.arc(875,125,gameD.pressureA[i],0,2*Math.PI,false);
+            ctx.arc(875,125,gameD.pressureA[i]/7,0,2*Math.PI,false);
             ctx.fillStyle ='#5642f4';
             ctx.fill();
             ctx.closePath();
             
             ctx.beginPath();
-            ctx.arc(875,250,gameD.pressureB[i],0,2*Math.PI,false);
+            ctx.arc(875,250,gameD.pressureB[i]/7,0,2*Math.PI,false);
             ctx.fillStyle ='#ae3de2';
             ctx.fill();
             ctx.closePath();
             
             ctx.beginPath();
-            ctx.arc(875,375,gameD.pressureC[i],0,2*Math.PI,false);
+            ctx.arc(875,375,gameD.pressureC[i]/7,0,2*Math.PI,false);
             ctx.fillStyle ='#dd1ab6';
             ctx.fill();
             ctx.closePath();

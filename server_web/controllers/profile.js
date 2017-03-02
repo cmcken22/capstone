@@ -24,7 +24,7 @@ module.exports.getPatients = function(req, res) {
     });
   } else {
     User.findOne({ _id: req.payload._id }, function(err, user){
-      User.find({ _id: user.patients }, ['name','email'] ,function(err, patientList){
+      User.find({ _id: user.patients }, ['name','email','_id'] ,function(err, patientList){
         res.status(200).json(patientList);
       })
     });

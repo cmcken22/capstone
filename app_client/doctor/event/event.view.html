@@ -4,89 +4,156 @@
 
     <sidebar></sidebar>
 
-    <div id="page-content-wrapper" ng-init="getExercise()">
-        
-            <div ng-init="getPatients()"></div>
-            <div class="container-fluid">
-                <h1>Add a patient Event</h1>
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <h1>Exercise Manager</h1>
+            <div class="hh-panel">
 
-                <!-- here i'm gonna pull up some events from the database -->
-                <div class='hh-panel col-lg-5 col-md-7'>
-                <form class='form-horizontal'novalidate ng-submit="addEvent()">
-                   <legend>Easy event setup!</legend>
-                <div class='form-group col-lg-12 col-md-12 '>
-                <select name='exercise' class='form-control' id='exercise-select' ng-model='sInfo.exercise'>
-                    <option ng-repeat="e in allex" value="{{e._id}}">{{e.name}}</option>
-                </select>
-                <div class='form-group col-lg-10 ng-hide' ng-show='sInfo.exercise !=null'>
-                    <label>Time limit:</label><input class= 'form-control' ng-model='sInfo.timeLimit' type ='text'/> 
-                    
-                </div>
-                </div>
-               <div class='form-group col-lg-12 col-md-12'>
-                <select class='form-control' id='patient-select' ng-model='sInfo.patient'>
-                    <option ng-repeat='p in patients' value='{{p._id}}'>{{p.name}}</option>
-                </select>
-                </div>
-                <br>
-                <div class='form-group col-lg-12 col-md-12'>
-                    <textarea class='form-control' rows='3' ng-model='sInfo.description' 
-                    placeholder='Give us a little description! (optional)'></textarea>
-                </div>
-                <br>
-      <!--          timeLimit:'',-->
-      <!--alphaFilter:'',-->
-      <!--gripThreshold: '',-->
-      <!--axialThreshold:'' -->
-                <div class='form-group'>
-                    <div class='col-md-12 col-lg-12' >
-                    <input class="datetime form-control" type="text" ng-model='date' placeholder="Select Date.." />
-                    </div>
-                    <div class='col-md-6 col-lg-6'>
-                    <input id="starttimepick" class='form-control' type="text" ng-model='startTime' placeholder="Start Time.." />
-                    </div>
-                    <div class='col-md-6 col-lg-6'>
-                    <input id='endtimepick' class='form-control'type="text" ng-model='endTime' placeholder="End time.." />
-                    </div>
-                    </div>
-                    
-                    <input type='checkbox' ng-model='sInfo.type' ng-true-value="'appointment'">is this an appointment?<br>
-
-                    <input type='radio' ng-model='sInfo.repeat' name='sInfo.repeat' ng-value=false>One Time<br>
-                    <input type='radio' ng-model='sInfo.repeat' name='sInfo.repeat' ng-value=true>Repeating<br>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href='#new-event' data-toggle="tab" aria-expanded="true">Create Patient Event</a></li>
+                    <li class="pull-right"><a href='#view-exercises' data-toggle="tab" aria-expanded="false">Current Exercises</a></li>
+                    <li class="pull-right"><a href='#new-exercise' data-toggle="tab" aria-expanded="false">Add Exercise Type</a></li>
+                </ul>
 
 
-                    <!-- this div will hide and show depending on the value of the above things-->
-                    <!--{{sInfo.repeat}}-->
-                    <div ng-show='sInfo.repeat' class="ng-hide">
-                        <div class='hh-panel'>
-                            <p>every...</p>
+                <div class="tab-content">
+                    <div class="tab-pane fade active in" id="new-event">
+                        <form ng-submit="vm.addEvent()">
+                            <legend>Add a Patient Exercise Event</legend>
+    
+                            <div class='form-group'> 
+                                <div class='col-lg-12'>
+                                    <select class='form-control' id='patient-select' ng-model='sInfo.patient' required>
+                                        <option ng-repeat='p in patients' value='{{p._id}}'>{{p.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+    
+                            <div class='form-group'> 
+                                <div class='col-lg-12'>
+                                <select name='exercise' class='form-control' id='exercise-select' ng-model='sInfo.exercise'>
+                                  <option ng-repeat='e in allex' value='{{e._id}}'>{{e.name}}</option>
+                               </select>
+                                </div>
+                            </div>
+                            
+                            <div class='form-group'> 
+                                <div class='col-lg-12'>
+                                    <textarea class='form-control' rows='3' ng-model='sInfo.description' placeholder='Description (optional)'></textarea>
+                                </div>
+                            </div>
+                            <!--timeLimit:'',-->
+                            <!--alphaFilter:'',-->
+                            <!--gripThreshold: '',-->
+                            <!--axialThreshold:'' -->
+    
+                            <div class='form-group clearfix'> 
+                                <div class='col-lg-12'>
+                                    <input class="datetime form-control" type="text" ng-model='date' placeholder="Select Date..">
+                                </div>
+                            </div>
+                            <div class='form-group clearfix'>
+                                <div class='col-lg-6'>
+                                    <input id="starttimepick" class='form-control' type="text" ng-model='startTime' placeholder="Start Time.." >
+                                </div>
+                                <div class='col-lg-6'>
+                                    <input id='endtimepick' class='form-control' type="text" ng-model='endTime' placeholder="End time..">
+                                </div>
+                            </div>
+                            
+    
+                            <div class='form-group checkbox clearfix'> 
+                                <div class='col-lg-12'>
+                                    <label>
+                                    <input type='checkbox' ng-model='sInfo.type'> Is this an appointment? (face-to-face meeting)<br>
+                                    </label>
+                                </div>
+                            </div>
                             <div class='form-group'>
-                            <div class='col-lg-6 col-md-6'>
-                                <select class='1-100 form-control' ng-model='sInfo.skip'></select>
+                                <div class='col-lg-12 radio'>
+                                    <label>
+                                        <input type='radio' ng-model='sInfo.repeat' name='sInfo.repeat' ng-value=false >One Time<br>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type='radio' ng-model='sInfo.repeat' name='sInfo.repeat' ng-value=true>Repeating<br>
+                                    </label>
+                                </div>
                             </div>
-                            <div class='col-lg-6 col-md-6'>
-                            <select ng-model='sInfo.rOption' class='form-control'>
-                                <option ng-value='days' selected='selected'>days</option>
-                                <option ng-value='months'>months</option>
-                                <option ng-value='years'>years</option>
-                            </select>
+                            
+                            <div ng-show='sInfo.repeat' class="ng-hide">
+                                <div class='form-group'>
+                                    <div class='form-group col-lg-6 col-md-6'>
+                                        <select ng-model='sInfo.skip' class='1-100 form-control'></select>
+                                    </div>
+                                    <div class='form-group col-lg-6 col-md-6'>
+                                        <select ng-model='sInfo.rOption' class='form-control'>
+                                           <option ng-value='days' ng-selected='selected'>days</option>
+                                           <option ng-value='weeks'>weeks</option>
+                                           <option ng-value='months'>months</option>
+                                        </select>
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <div class='form-group col-lg-12 col-md-12'>
+                                        <input class="endDate form-control" type='text' placeholder="Until...">
+                                    </div>
+                                </div>
+                                <br>
                             </div>
-                            <br>
-
-                       <br>
-                       <div class='col-lg-12 col-md-12'>
-                        <input class="endDate form-control" type='text' placeholder="Until...">
-                        </div>
-                        </div>
-                         </div>
-                         <br>
+                            
+                            <div class="form-group">
+                                <div class="alert-div">
+                                 </div>
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <input type="submit" class='btn btn-primary'id="submit" value="Submit" />
-                </form>
-
+                    
+                    <div class="tab-pane fade in" id="new-exercise">
+                        <legend>Create a new Exercise Type</legend>
+                        
+                        <form class="form-horizontal" ng-submit="vm.addExercise()">
+                            <div class="form-group">
+                              <label for="inputEmail" class="col-lg-2 control-label">Name</label>
+                              <div class="col-lg-10">
+                                <input type="text" class="form-control" id="inputEmail" ng-model="vm.exerciseInfo.name" placeholder="" required>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="textArea" class="col-lg-2 control-label">Description</label>
+                              <div class="col-lg-10">
+                                <textarea class="form-control" rows="3" id="textArea" ng-model="vm.exerciseInfo.description" placeholder="" required></textarea>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="col-lg-10 col-lg-offset-2">
+                                 <div class="alert-div">
+                                 </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                              </div>
+                            </div>
+                        </form>
+                        
+                    </div>
+                    
+                    
+                    <div class="tab-pane fade in" id="view-exercises">
+                        <legend>Current Exercises</legend>
+                        <div ng-repeat="oneEvent in allex">
+                            <div class="panel panel-default cancel-hover">
+                              <div class="panel-heading"><h4>{{oneEvent.name}}</h4></div>
+                                  <div class="panel-body">{{oneEvent.description}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
             </div>
         </div>
-
     </div>
 </div>

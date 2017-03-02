@@ -75,9 +75,7 @@ module.exports.numNewMessages = function(req, res) {
 
 module.exports.getMessages = function(req, res) {
     console.log('/get-messages');
-    console.log(req.payload);
     Message.find({ $or:[ {'receiver':req.payload._id}, {'sender':req.payload._id} ]}, function(err, data){
-        console.log(data);
         if(err) {
             console.log(err)
             res.json(err);

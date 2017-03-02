@@ -6,9 +6,9 @@
     .module('mainApp')
     .controller('managerCtrl', managerCtrl);
 
-  managerCtrl.$inject = ['$scope', 'dataService'];
+  managerCtrl.$inject = ['$scope', 'dataService', '$routeParams'];
 
-  function managerCtrl($scope, $dataService) {
+  function managerCtrl($scope, $dataService, $routeParams) {
     var vm = this;
     vm.clicked = true;
     vm.exerciseInfo = {

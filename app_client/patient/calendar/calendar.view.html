@@ -6,18 +6,76 @@
   <sidebar></sidebar>
   
   <div id="page-content-wrapper" class="container-fluid">
+    
   
     <div class="row">
-      <div class="col-md-6">
-        <h1 class="form-signin-heading">Calendar</h1>
+      <h1 class="form-signin-heading col-md-12">Calendar</h1>
+      <div class="col-md-9">
+        
     
         
       <!--<div ui-calendar="vm.uiConfig.calendar" ng-model="vm.eventSources" calendar="vm.myCalendar">-->
         <div id='calendar' class='calendar' ng-model="vm.eventSources"></div>
         <!--<div ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources"></div>-->
         
+            </div>
+            <div class = col-md-3 hh-panel>
+              <legend>hello world</legend>
+              <div id ='blueSwatch'class = 'col-md-12'>
+                <p>Completed Exercise</p>
+              </div> 
+              <div id ='orangeSwatch'class = 'col-md-12'>
+                <p>Scheduled Exercise</p>
+              </div>
+              <div id ='yellowSwatch'class = 'col-md-12'>
+                <p>Appointment</p>
+              </div>
+              
+            </div>
+            
+          <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h3 class="modal-title" id="myModalLabel">Viewing: {{vm.modal.details}}</h3>
+            </div>
+            <div class="modal-body">
+              
+              <div id='individualGraphArea' class="well">
+                <div ng-if="vm.zoom == true">
+                  <p class="h3x">exercise: {{vm.modal.gameObject.code}}</p>
+                  <p class="h3x">completion time: {{vm.modal.gameObject.time}}</p>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.prev()">prev</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.next()">next</button>
+                </div>
+                
+                <br>
+                <div class='graph' id='graph'>
+                  <canvas id="my-graph"></canvas>
+                </div>
+                  
+                <div ng-if="vm.graphDisplayed == true">
+                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','modal')">line</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','modal')">bar</button>
+                  <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('pie','modal')">pie</button>
+                </div>
+              </div><!-- graphArea -->
+              
+            </div>
+            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
         
-      </div>
+        
+        
+      
     
     </div>
   </div>    

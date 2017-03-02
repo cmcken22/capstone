@@ -80,8 +80,13 @@
     };
     var getEventByPatientId = function(data){
       console.log('dataservice: '+ data)
-      return $http.post('/api/get-eventByPatientId',{_id:data});
+      return $http.post('/api/get-eventByPatientId',{
+        _id:data
+      });
     };
+    var getDoctorEvents = function(){
+      return $http.get('/api/get-doctor-events');
+    }
     var postEvent = function(data){
       return $http.post('/api/post-event', data);
     };

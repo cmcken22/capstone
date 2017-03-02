@@ -7,6 +7,9 @@
   <div id="page-content-wrapper">
     <div class="container-fluid">
       <h1>Messages</h1>
+      <div class="progress progress-striped active" ng-hide="vm.everythingLoaded">
+        <div class="progress-bar" style="width: 90%"></div>
+      </div>
       <div class="hh-panel" ng-show="vm.everythingLoaded">
         
         <ul class="nav nav-tabs">
