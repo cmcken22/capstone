@@ -37,7 +37,7 @@ node server
 gulp
 
 ## to look into mongo server:: 
-## cd anywhere I think ? ? 
+## cd anywhere I think ? ? --> cd server_web 
 mongo
 
 ##mongo commands: 
