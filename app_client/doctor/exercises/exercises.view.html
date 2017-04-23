@@ -7,14 +7,7 @@
   <div id="page-content-wrapper">
     <div class="container-fluid">
       
-      
       <br>
-      
-      <!--<div class="form-group">-->
-      <!--  <div class="col-lg-3">-->
-      <!--    <button class="btn btn-primary btn-lg" ng-click="vm.generateGameData()">Generate Data</button>-->
-      <!--  </div>-->
-      <!--</div>-->
       
       <div class="hh-panel">
         
@@ -55,7 +48,7 @@
                     <div class="input-group date" id="monthPicker">
                       <input type="text" class="form-control" name="month" id='_monthPicker'>
                       <div class="input-group-addon">
-                          <span class="glyphicon glyphicon-th"></span>
+                        <span class="glyphicon glyphicon-th"></span>
                       </div>
                     </div>
                   </div>
@@ -153,8 +146,6 @@
               
               <div id='individualGraphArea' class="well">
                 <div ng-if="vm.zoom == true">
-                  <!--<p class="h3x">exercise: {{vm.modal.gameObject.code}}</p>-->
-                  <!--<p class="h3x">completion time: {{vm.modal.gameObject.time}}</p>-->
                   <button class="btn btn-primary btn-sml" ng-click="vm.prev()">prev</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.next()">next</button>
                 </div>
@@ -164,25 +155,26 @@
                   <canvas id="my-modalGraph"></canvas>
                 </div>
                 <div ng-controller='simCtrl'>
-                   <canvas ng-show="vm.showSim" ng-init ='initCanvas()'ng-click="initFromModal(vm.originalObject)" id='simulation' width=1000 height="500" >
+                   <canvas ng-show="vm.showSim" ng-init ='initCanvas()' ng-click="initFromModal(vm.originalObject)" id='simulation' width=1000 height="500" >
                 </div>
                   
                 <div ng-if="vm.graphDisplayed == true" ng-hide='vm.showSim'>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('line','modal')">line</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.changeGraphType('bar','modal')">bar</button>
-                  <!--<div ng-controller='simCtrl'>-->
-                    <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">simulation</button>
-                  <!--</div>-->
+                  <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim;">simulation</button>
                 </div>
+                
                 <div ng-show="vm.showSim">
+                  <button class="btn btn-primary btn-sml" ng-click="vm.start()">addData</button>
                   <button class="btn btn-primary btn-sml" ng-click="vm.showSim = !vm.showSim">hide</button>
                 </div>
               </div><!-- graphArea -->
            
             </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
+            
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
             
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

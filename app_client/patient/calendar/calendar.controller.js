@@ -71,6 +71,7 @@
                     color:'',
                     description:''
                 };
+                console.log("Log Exercise")
                 console.log(vm.events[i].exercise)
 
                 if(vm.events[i].type == "Appointment")
@@ -78,7 +79,9 @@
                     event.title = "Appointment" ;
                 }
                 else{
-                    event.title= vm.events[i].exercise.name;
+                    console.log('Output Event Exercise')
+                    console.log(vm.events[i].exercise)
+                   // event.title= vm.events[i].exercise.name;
                     
                 }
                 

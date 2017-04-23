@@ -9,10 +9,9 @@
       
       <h1>Dashboard</h1>
       
-      <div class = 'col-lg-6 nopadding'>
-        <div class='hh-masonry hh-panel'>
-          
-          <div class='hh-content-pane'>
+      <div class='row nomargin hh-panel'>
+        <div class='hh-content-pane'>
+            
             <legend>Today's events</legend>
             
             <div ng-repeat='e in myEvents'>
@@ -28,13 +27,12 @@
               </div>
             </div>
             <p ng-show='myEvents.length == 0'>No planned exercises today.</p>
-          </div>
+
         </div>
       </div>
-      
-      <div class = 'col-lg-6 nopadding'>
-        <div class='hh-masonry hh-panel'>
-          <div class='hh-content-pane'>
+      <br>
+      <div class='row nomargin hh-panel'>
+        <div class='hh-content-pane'>
             <legend>Unread Messages</legend>
           
           <!--<div ng-repeat="m in mssg | orderBy:'date':true">-->
@@ -57,23 +55,22 @@
               </div>    
             </div>
             <p ng-show="vm.unreadCount == 0">No unread messages.</p>
-          </div>
         </div>
       </div>
       
-      <div class = 'col-lg-6 nopadding'>
-        <div class='hh-masonry hh-panel'>
-          <h2>Past Exercises</h2>
-          <div ng-repeat='g in myGameData' class='list-group-item'>
-            <h4>{{g.exercise.name}}</h4> 
-            <p>completed on {{g.date.getFullYear()}}/{{g.date.getMonth()}}/{{g.date.getDate()}}
-            at {{g.date.getHours()}}:{{g.date.getMinutes()}}</p>
-            <div>
-            <p ng-show='vm.pastExerciseCount == 0'>No past exercises.</p>
-            </div>
-          </div> 
-        </div>
-      </div>
+      <!--<div class='row nomargin hh-panel'>-->
+      <!--  <div class='hh-content-pane'>-->
+      <!--    <h2>Past Exercises</h2>-->
+      <!--    <div ng-repeat='g in myGameData' class='list-group-item'>-->
+      <!--      <h4>{{g.exercise.name}}</h4> -->
+      <!--      <p>completed on {{g.date.getFullYear()}}/{{g.date.getMonth()}}/{{g.date.getDate()}}-->
+      <!--      at {{g.date.getHours()}}:{{g.date.getMinutes()}}</p>-->
+      <!--      <div>-->
+      <!--      <p ng-show='vm.pastExerciseCount == 0'>No past exercises.</p>-->
+      <!--      </div>-->
+          
+      <!--  </div>-->
+      <!--</div>-->
       
       
     </div>

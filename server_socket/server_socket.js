@@ -180,7 +180,7 @@ module.exports.onConnection = function(socket){
 	            	if (err) throw err;
 	            	console.log('Retrieving incomplete exercises for ' + user.name);
 	            	events.forEach(function(singleE){
-    					//console.log('Thing retrieved:' + singleE);
+    					console.log('Thing retrieved:' + singleE);
     					if(singleE.exercise)
     					{
     						var exerciseData = {

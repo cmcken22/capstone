@@ -5,9 +5,9 @@
 (function() {
     angular.module('mainApp')
     .controller('calendarCtrl', calendarCtrl);
-    calendarCtrl.$inject = ['$compile', '$location', 'authentication','dataService', '$scope'];
+    calendarCtrl.$inject = ['$location', 'authentication','dataService', '$scope'];
 
-    function calendarCtrl($compile, $location,authentication, dataService, $scope) {
+    function calendarCtrl($location,authentication, dataService, $scope) {
         var vm = this;
         vm.everythingLoaded = false;
         vm.events = new Array();
@@ -59,19 +59,14 @@
         vm.getEvents = function() {
             dataService.getEventByPatientId(vm.patient_ids).success(function(data) {
                     vm.events = data;
-                    vm.events.forEach(function(data)
-                    {
-                        vm.patientList.forEach(function(p)
-                        {
-                            if(p._id == data.patient)
-                            {
+                    vm.events.forEach(function(data){
+                        vm.patientList.forEach(function(p){
+                            if(p._id == data.patient){
                                 data.patient=p;
                             }
                         })
-                        vm.exerciseList.forEach(function(ex)
-                        {
-                            if(ex._id == data.exercise)
-                            {
+                        vm.exerciseList.forEach(function(ex){
+                            if(ex._id == data.exercise){
                                 data.exercise=ex;
                             }
                         }) 
@@ -87,16 +82,15 @@
         }
         
         dataService.getPatients().success(function(data){
-        vm.patientNames = data.map(function(a) {
-          return { id:a._id, text:a.name }
-        });
-        
-        $("#patient-select").select2({
-				  data: vm.patientNames,
-				  placeholder: "Select a patient"
-				}).on("change", function(e) {
-				  vm.compose.patientId = $("#patient-select").val();
-				});
+            vm.patientNames = data.map(function(a) {
+                return { id:a._id, text:a.name }
+            });
+            $("#patient-select").select2({
+    		  data: vm.patientNames,
+    		  placeholder: "Select a patient"
+    		}).on("change", function(e) {
+    		  vm.compose.patientId = $("#patient-select").val();
+    		});
         });
         
         vm.getPatients();
@@ -142,24 +136,17 @@
                         //yellow
                         event.backgroundColor = '#FFBF10';
                         event.textColor = 'FFFFFF';
-                        
-                
-                        
                     }
                     else if (event.type == null || event.type == "false" || event.type == "" || event.type ==false) {
                         //orange
                         event.backgroundColor = "#FF6c3e";
                         event.textColor = 'FFFFFF';
-                        
-                
                     }
                     if (event.completed == true) {
                         //orange
                         event.backgroundColor = "#1993DC";
                         event.textColor = 'FFFFFF';
                         // event.color = "#FF4910"
-                
-                
                     }
                     vm.populatedEvents.push(event);
                 }
@@ -184,7 +171,8 @@
         vm.options = {
             scales: {
                 yAxes: [{ scaleLabel: { display: true, labelString: 'Pressure Values' }}],
-                xAxes: [{ scaleLabel: { display: true, labelString: 'Time (Seconds)' }}],
+                // xAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.xAxes }, ticks: { autoSkip: false } }],
+                xAxes: [{ scaleLabel: { display: true, labelString: 'Time (Seconds)' }, ticks: { autoSkip: false } }],
             }
         }
 
@@ -234,7 +222,7 @@
                     right: 'month,basicWeek,basicDay'
                 },
                 timezone: 'local',
-                defaultDate: '2017-02-12',
+                defaultDate: '2017-03-30',
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events
@@ -272,11 +260,18 @@
             console.log('---------Updating Chart Data---------');
             console.log(data);
             var oldCanvas = vm.resetCanvas();
+            var ts = 0;
             
             var graphAxial = []; var graphA = []; var graphB = []; var graphC = [];
             var labels = [];
             for (var i = 0; i < data.pressureAxial.length; i++) {
-                labels[i] = i;
+                if(i%50 == 0){
+                    labels[i] = ts;
+                    ts++;
+                }
+                else{
+                    labels[i] = '';
+                }
                 graphAxial[i] = data.pressureAxial[i];
                 graphA[i] = data.pressureA[i];
                 graphB[i] = data.pressureB[i];

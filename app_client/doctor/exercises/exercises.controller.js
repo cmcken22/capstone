@@ -46,6 +46,13 @@
                 xAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.xAxes }, ticks: { autoSkip: false } }],
              }
         }
+        vm.modalGraph_2 = {}
+        vm.modalGraph_2.options = {
+            scales: {
+                yAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.yAxes }, ticks: { beginAtZero: true }}],
+                xAxes: [{ scaleLabel: { display: true, labelString: vm.modalGraph.labels.xAxes }, ticks: { autoSkip: false } }],
+             }
+        }
         
         vm.refreshOptions = function(){
             vm.mainGraph.options = {
@@ -374,13 +381,11 @@
         };
         
         vm.graphPressure = function(data, pressureType, exerciseName){
-            console.log('Graphing Pressure:');
-            console.log(exerciseName);
             var graphData = [];
             var labels = [];
             var ts = 0;
             
-            var _data = '';
+            var _data = [];
             switch(pressureType) {
                 case 0:
                     vm.modalGraph.labels.yAxes = 'Pressure (Axial)';
@@ -412,7 +417,6 @@
                 else{
                     labels[i] = '';
                 }
-                graphData[i] = _data[i];
             }
             
             var dataset = {
@@ -420,12 +424,13 @@
                 backgroundColor: vm.colors[pressureType%vm.colors.length].light,
                 borderColor: vm.colors[pressureType%vm.colors.length].dark,
                 borderWidth: 1,
-                data: graphData,
+                data: _data,
             }
             
             vm.graphData.labels = labels;
             return dataset;
         };
+        
         
         vm.updateMainGraph = function(){
             console.log('-------------------\n Updating Chart Data \n-------------------');
@@ -493,6 +498,7 @@
             return oldCanvas;
         };
         
+        var modalGraph = null;
         vm.updateModalGraph = function(){
             console.clear();
             console.log('Updating Modal Graph');
@@ -512,9 +518,8 @@
                 options : vm.modalGraph.options,
             }
             
-            new Chart(document.getElementById('my-modalGraph').getContext('2d'), config);
+            modalGraph = new Chart(document.getElementById('my-modalGraph').getContext('2d'), config);
             oldCanvas.remove();
-            
         };
         
         vm.resetModalCanvas = function(){
@@ -526,10 +531,8 @@
           return oldCanvas;
         };
         
+        
         vm.displayObject = function(data){
-            console.log('Displaying Object:');
-            console.log(data);
-            console.log(data.exercise);
             $dataService.getSingleExercise(data.exercise).success(function(exercise){
                 vm.graphData.datasets = [];
                 vm.graphData.datasets[0] = vm.graphPressure(data, vm.graphData.pressureType, exercise[0].name);
@@ -632,17 +635,5 @@
            } 
            return ar;
         };
-    
     };
-    
 })();
-
-//function used only for submitting dummy data
-function setDate(date){
-    var year = date.year;
-    var month = date.month - 1;
-    var day = date.day;
-    var d = new Date(Date.UTC(year, month, day, 0, 0, 0));
-    var n =  d.toISOString();
-    return n;
-};
